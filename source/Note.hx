@@ -112,7 +112,6 @@ class Note extends FlxSprite
 		if (inCharter)
 		{
 			frames = Paths.getSparrowAtlas('NOTE_assets');
-
 			for (i in 0...4)
 			{
 				animation.addByPrefix(dataColor[i] + 'Scroll', dataColor[i] + ' alone'); // Normal notes
