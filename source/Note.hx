@@ -92,16 +92,8 @@ class Note extends FlxSprite
 		else
 		{
 			this.strumTime = strumTime;
-			#if sys
-			if (PlayState.isSM)
-			{
-				rStrumTime = strumTime;
-			}
-			else
-				rStrumTime = strumTime;
-			#else
 			rStrumTime = strumTime;
-			#end
+			
 		}
 
 		if (this.strumTime < 0)
@@ -127,7 +119,6 @@ class Note extends FlxSprite
 				animation.addByPrefix(dataColor[i] + 'hold', dataColor[i] + ' hold'); // Hold
 				animation.addByPrefix(dataColor[i] + 'holdend', dataColor[i] + ' tail'); // Tails
 			}
-
 			setGraphicSize(Std.int(width * 0.7));
 			updateHitbox();
 			antialiasing = FlxG.save.data.antialiasing;
