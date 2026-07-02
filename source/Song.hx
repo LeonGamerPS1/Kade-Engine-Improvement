@@ -1,5 +1,3 @@
-package;
-
 import Section.SwagSection;
 import haxe.Json;
 import haxe.format.JsonParser;
@@ -134,7 +132,6 @@ class Song
 			var type = Reflect.field(i,"type");
 			var pos = Reflect.field(i,"position");
 			var value = Reflect.field(i,"value");
-			
 
 			convertedStuff.push(new Song.Event(name,pos,value,type));
 		}

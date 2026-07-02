@@ -25,7 +25,7 @@ class StaticArrow extends FlxSprite
 	{
 		if (!modifiedByLua)
 			angle = localAngle + modAngle;
-		else 
+		else
 			angle = modAngle;
 		super.update(elapsed);
 
@@ -33,7 +33,19 @@ class StaticArrow extends FlxSprite
 		{
 			localAngle += 10;
 		}
+
+		if (r != 0)
+		{
+			r -= (1 / FlxG.updateFramerate) * FlxG.timeScale;
+			if (r <= 0)
+			{
+				r = 0;
+				playAnim('static');
+			}
+		}
 	}
+
+	public var r = 0.15;
 
 	public function playAnim(AnimName:String, ?force:Bool = false):Void
 	{
@@ -43,10 +55,9 @@ class StaticArrow extends FlxSprite
 		{
 			localAngle = 0;
 		}
-	
+
 		centerOffsets();
 		centerOrigin();
-
 
 		angle = localAngle + modAngle;
 	}

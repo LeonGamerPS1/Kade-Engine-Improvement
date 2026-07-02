@@ -25,10 +25,8 @@ class HealthIcon extends FlxSprite
 
 		isPlayer = isOldIcon = false;
 
-		antialiasing = FlxG.save.data.antialiasing;
 
 		changeIcon(char);
-		scrollFactor.set();
 	}
 
 	public function swapOldIcon()
@@ -38,8 +36,6 @@ class HealthIcon extends FlxSprite
 
 	public function changeIcon(char:String)
 	{
-		if (char != 'bf-pixel' && char != 'bf-old')
-			char = char.split("-")[0];
 		loadGraphic(Paths.image('icons/icon-' + char));
 		loadGraphic(Paths.image('icons/icon-' + char), true, Math.floor(frameWidth / 2), frameHeight);
 		if(char.endsWith('-pixel') || char.startsWith('senpai') || char.startsWith('spirit'))

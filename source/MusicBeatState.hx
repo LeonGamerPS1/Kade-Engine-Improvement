@@ -1,9 +1,6 @@
 package;
 
 import flixel.FlxBasic;
-#if windows
-import Discord.DiscordClient;
-#end
 import flixel.util.FlxColor;
 import openfl.Lib;
 import Conductor.BPMChangeEvent;

@@ -7,9 +7,6 @@ import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.math.FlxMath;
 import flixel.util.FlxColor;
-#if polymod
-import polymod.format.ParseRules.TargetSignatureElement;
-#end
 import PlayState;
 
 using StringTools;
@@ -30,13 +27,10 @@ class Note extends FlxSprite
 	public var tooLate:Bool = false;
 	public var wasGoodHit:Bool = false;
 	public var prevNote:Note;
-	public var modifiedByLua:Bool = false;
 	public var sustainLength:Float = 0;
 	public var isSustainNote:Bool = false;
 	public var originColor:Int = 0; // The sustain note's original note's color
 	public var noteSection:Int = 0;
-
-	public var luaID:Int = 0;
 
 	public var isAlt:Bool = false;
 
@@ -190,7 +184,7 @@ class Note extends FlxSprite
 		animation.play(dataColor[noteData] + 'Scroll');
 		originColor = noteData; // The note's origin color will be checked by its sustain notes
 
-		if (FlxG.save.data.stepMania && !isSustainNote && !PlayState.instance.executeModchart)
+		if (FlxG.save.data.stepMania && !isSustainNote)
 		{
 			var col:Int = 0;
 
@@ -256,7 +250,7 @@ class Note extends FlxSprite
 				prevNote.animation.play(dataColor[prevNote.originColor] + 'hold');
 				prevNote.updateHitbox();
 
-				prevNote.scale.y *= (stepHeight + 1) / prevNote.height; // + 1 so that there's no odd gaps as the notes scroll
+				prevNote.scale.y *= stepHeight / prevNote.height; // + 1 so that there's no odd gaps as the notes scroll
 				prevNote.updateHitbox();
 
 				// prevNote.setGraphicSize();
@@ -267,17 +261,12 @@ class Note extends FlxSprite
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
-		if (!modifiedByLua)
-			angle = modAngle + localAngle;
-		else
-			angle = modAngle;
 
-		if (!modifiedByLua)
+		angle = modAngle + localAngle;
+
+		if (!sustainActive)
 		{
-			if (!sustainActive)
-			{
-				alpha = 0.3;
-			}
+			alpha = 0.3;
 		}
 
 		if (mustPress)
@@ -317,17 +306,19 @@ class Note extends FlxSprite
 	}
 
 	public var ignoreNote = false;
-		public function clipToStrumNote(myStrum:StaticArrow)
+
+	public function clipToStrumNote(myStrum:StaticArrow)
 	{
 		var center:Float = myStrum.y + noteYOff + Note.swagWidth / 2;
-		if((mustPress || !ignoreNote) && (wasGoodHit || (prevNote.wasGoodHit && !canBeHit)))
+		if ((mustPress || !ignoreNote) && (wasGoodHit || (prevNote.wasGoodHit && !canBeHit)))
 		{
 			var swagRect:FlxRect = clipRect;
-			if(swagRect == null) swagRect = new FlxRect(0, 0, frameWidth, frameHeight);
+			if (swagRect == null)
+				swagRect = new FlxRect(0, 0, frameWidth, frameHeight);
 
 			if (flipY)
 			{
-				if(y - offset.y * scale.y + height >= center)
+				if (y - offset.y * scale.y + height >= center)
 				{
 					swagRect.width = frameWidth;
 					swagRect.height = (center - y) / scale.y;

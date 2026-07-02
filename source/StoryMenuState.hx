@@ -14,10 +14,6 @@ import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import lime.net.curl.CURLCode;
 
-#if windows
-import Discord.DiscordClient;
-#end
-
 using StringTools;
 
 class StoryMenuState extends MusicBeatState
@@ -36,6 +32,7 @@ class StoryMenuState extends MusicBeatState
 			['Senpai', 'Roses', 'Thorns']
 		];
 	}
+
 	var curDifficulty:Int = 1;
 
 	public static var weekUnlocked:Array<Bool> = [];
@@ -72,28 +69,23 @@ class StoryMenuState extends MusicBeatState
 	{
 		var weeks:Array<Bool> = [];
 		#if debug
-		for(i in 0...weekNames.length)
+		for (i in 0...weekNames.length)
 			weeks.push(true);
 		return weeks;
 		#end
-		
+
 		weeks.push(true);
 
-		for(i in 0...FlxG.save.data.weekUnlocked)
-			{
-				weeks.push(true);
-			}
+		for (i in 0...FlxG.save.data.weekUnlocked)
+		{
+			weeks.push(true);
+		}
 		return weeks;
 	}
 
 	override function create()
 	{
 		weekUnlocked = unlockWeeks();
-
-		#if windows
-		// Updating Discord Rich Presence
-		DiscordClient.changePresence("In the Story Mode Menu", null);
-		#end
 
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
@@ -213,7 +205,6 @@ class StoryMenuState extends MusicBeatState
 		add(txtWeekTitle);
 
 		updateText();
-
 
 		var bullShit:Int = 0;
 
@@ -358,9 +349,12 @@ class StoryMenuState extends MusicBeatState
 
 			// adjusting the song name to be compatible
 			var songFormat = StringTools.replace(PlayState.storyPlaylist[0], " ", "-");
-			switch (songFormat) {
-				case 'Dad-Battle': songFormat = 'Dadbattle';
-				case 'Philly-Nice': songFormat = 'Philly';
+			switch (songFormat)
+			{
+				case 'Dad-Battle':
+					songFormat = 'Dadbattle';
+				case 'Philly-Nice':
+					songFormat = 'Philly';
 			}
 
 			var poop:String = Highscore.formatSong(songFormat, curDifficulty);
@@ -471,7 +465,7 @@ class StoryMenuState extends MusicBeatState
 
 	public static function unlockNextWeek(week:Int):Void
 	{
-		if(week <= weekData().length - 1 && FlxG.save.data.weekUnlocked == week)
+		if (week <= weekData().length - 1 && FlxG.save.data.weekUnlocked == week)
 		{
 			weekUnlocked.push(true);
 			trace('Week ' + week + ' beat (Week ' + (week + 1) + ' unlocked)');

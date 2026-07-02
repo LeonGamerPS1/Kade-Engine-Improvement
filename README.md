@@ -1,6 +1,6 @@
 
 ## Notes
-Install Flixel Animate using: haxelib git flixel-animate https://github.com/MaybeMaru/flixel-animate experimental
+- Install Flixel Animate using: haxelib git flixel-animate https://github.com/MaybeMaru/flixel-animate experimental --skip-dependencies
 
 ![Kade Engine logo](assets/preload/images/KadeEngineLogo.png)
 

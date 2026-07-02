@@ -3,7 +3,7 @@ package;
 import lime.app.Application;
 import openfl.utils.Future;
 import openfl.media.Sound;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound;
 #if sys
 import smTools.SMFile;
 import sys.FileSystem;
@@ -20,9 +20,6 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
-#if windows
-import Discord.DiscordClient;
-#end
 
 using StringTools;
 
@@ -167,21 +164,6 @@ class FreeplayState extends MusicBeatState
 		}
 		#end
 
-		// trace("\n" + diffList);
-
-		/* 
-			if (FlxG.sound.music != null)
-			{
-				if (!FlxG.sound.music.playing)
-					FlxG.sound.playMusic(Paths.music('freakyMenu'));
-			}
-		 */
-
-		#if windows
-		// Updating Discord Rich Presence
-		DiscordClient.changePresence("In the Freeplay Menu", null);
-		#end
-
 		var isDebug:Bool = false;
 
 		#if debug
@@ -189,10 +171,6 @@ class FreeplayState extends MusicBeatState
 		#end
 
 		persistentUpdate = true;
-
-		// LOAD MUSIC
-
-		// LOAD CHARACTERS
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuBGBlue'));
 		bg.antialiasing = FlxG.save.data.antialiasing;
@@ -486,11 +464,6 @@ class FreeplayState extends MusicBeatState
 
 	function changeSelection(change:Int = 0)
 	{
-		#if !switch
-		// NGio.logEvent('Fresh');
-		#end
-
-		// NGio.logEvent('Fresh');
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 
 		curSelected += change;
