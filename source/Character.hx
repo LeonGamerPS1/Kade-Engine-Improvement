@@ -467,7 +467,41 @@ class Character extends FlxAnimate
 			}
 
 			lastChar = curCharacter;
+			var atlasAnimate = OpenFlAssets.exists(Paths.getPath('images/${json.texture.path}' + '/Animation.json', TEXT, json.texture.library));
+			if (!atlasAnimate)
+				frames = Paths.getSparrowAtlas(json.texture.path, json.texture.library);
+			else
+				frames = FlxAnimateFrames.fromAnimate(Paths.getPath('images/${json.texture.path}/Animation.json', TEXT, json.texture.library)
+					.replace('Animation.json', ''));
+
+			scale.set(json.scale.x, json.scale.y);
+			skew.set(json.texture.skew.x, json.texture.skew.y);
+			antialiasing = json.texture.blur;
+
+			for (anim in json.animation_data.map)
+			{
+				if(anim.indices != null)
+					addByIndices(anim.animationName, anim.prefix, anim.indices, anim.repeat ?? false, anim.fps ?? 24);
+				else 
+					addByPrefix(anim.animationName, anim.prefix, anim.repeat ?? false, anim.fps ?? 24);
+			}
 		}
+	}
+
+	public function addByPrefix(name:String, prefix:String, loop = false, fps = 24.0)
+	{
+		if (!isAnimate)
+			animation.addByPrefix(name, prefix, fps, loop);
+		else
+			anim.addBySymbol(name, prefix, fps, loop);
+	}
+
+	public function addByIndices(name:String, prefix:String, id:Array<Int>, loop = false, fps = 24.0)
+	{
+		if (!isAnimate)
+			animation.addByIndices(name, prefix, id, '', fps, loop);
+		else
+			anim.addBySymbolIndices(name, prefix, id, fps, loop);
 	}
 
 	public function loadOffsetFile(character:String, library:String = 'shared')

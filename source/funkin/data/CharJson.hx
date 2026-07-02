@@ -12,7 +12,7 @@ typedef Bool2D = {
 
 typedef AnimationConfig = {
     var animationName:String;
-    var fps:Int;
+    var ?fps:Int;
     var prefix:String;
     var ?indices:Array<Int>; // Optional: only needed for frame index mapping
     var offsets:Point2D;
