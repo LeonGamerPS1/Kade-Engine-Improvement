@@ -18,6 +18,7 @@ class Character extends FlxAnimate
 	public var curCharacter:String = 'bf';
 
 	public var holdTimer:Float = 0;
+	public var icon = "dad";
 
 	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false)
 	{
@@ -417,12 +418,54 @@ class Character extends FlxAnimate
 	{
 		this.curCharacter = curChar;
 		final path = 'assets/data/chars/$curChar.json';
+		final fallbackPath = 'assets/data/chars/gf.json';
+
+		// 1. Prüfen, welcher Pfad existiert
+		var finalPath:String = "";
 		if (OpenFlAssets.exists(path))
-			trace('Character JSON $path doesnt exist');
+		{
+			finalPath = path;
+		}
+		else
+		{
+			trace('WARNUNG: Charakter-JSON unter $path existiert nicht. Weiche auf gf.json aus.');
+			if (OpenFlAssets.exists(fallbackPath))
+			{
+				finalPath = fallbackPath;
+			}
+			else
+			{
+				// Kritischer Fehler: Selbst die Standard-Datei fehlt!
+				trace('KRITISCHER FEHLER: Auch die Fallback-Datei $fallbackPath wurde nicht gefunden!');
+			}
+		}
 
 		if (curChar != lastChar)
 		{
-			json = haxe.Json.parse(OpenFlAssets.exists(path) ? OpenFlAssets.getText(path) : OpenFlAssets.getText('assets/data/chars/${this.curCharacter = 'dad'}.json'));
+			// 2. Text nur laden, wenn ein gültiger Pfad gefunden wurde
+			var jsonText:String = "";
+			if (finalPath != "")
+			{
+				jsonText = OpenFlAssets.getText(finalPath);
+			}
+
+			// 3. Verhindern, dass null oder ein leerer String gecrasht wird
+			if (jsonText != null && jsonText.trim() != "")
+			{
+				try
+				{
+					json = haxe.Json.parse(jsonText);
+				}
+				catch (e:Dynamic)
+				{
+					trace('FEHLER beim Parsen der JSON-Datei ($finalPath): ' + Std.string(e));
+				}
+			}
+			else
+			{
+				trace('FEHLER: Die JSON-Daten für $curChar (oder gf) sind komplett leer oder null!');
+			}
+
 			lastChar = curCharacter;
 		}
 	}

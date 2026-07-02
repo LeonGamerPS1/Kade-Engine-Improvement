@@ -4,11 +4,6 @@ import lime.app.Application;
 import openfl.utils.Future;
 import openfl.media.Sound;
 import flixel.sound.FlxSound;
-#if sys
-import smTools.SMFile;
-import sys.FileSystem;
-import sys.io.File;
-#end
 import Song.SwagSong;
 import flixel.input.gamepad.FlxGamepad;
 import flash.text.TextField;
@@ -77,35 +72,16 @@ class FreeplayState extends MusicBeatState
 		for (i in 0...initSonglist.length)
 		{
 			var data:Array<String> = initSonglist[i].split(':');
-			var meta = new SongMetadata(data[0], Std.parseInt(data[2]), data[1]);
+			var meta = new SongMetadata(data[0].toLowerCase().replace(' ','-'), Std.parseInt(data[2]), data[1]);
 			var format = StringTools.replace(meta.songName, " ", "-");
-			switch (format)
-			{
-				case 'Dad-Battle':
-					format = 'Dadbattle';
-				case 'Philly-Nice':
-					format = 'Philly';
-			}
+
 
 			var diffs = [];
 			var diffsThatExist = [];
 
-			#if sys
-			if (FileSystem.exists('assets/data/${format}/${format}-hard.json'))
-				diffsThatExist.push("Hard");
-			if (FileSystem.exists('assets/data/${format}/${format}-easy.json'))
-				diffsThatExist.push("Easy");
-			if (FileSystem.exists('assets/data/${format}/${format}.json'))
-				diffsThatExist.push("Normal");
-
-			if (diffsThatExist.length == 0)
-			{
-				Application.current.window.alert("No difficulties found for chart, skipping.", meta.songName + " Chart");
-				continue;
-			}
-			#else
+		
 			diffsThatExist = ["Easy", "Normal", "Hard"];
-			#end
+			
 			if (diffsThatExist.contains("Easy"))
 				FreeplayState.loadDiff(0, format, meta.songName, diffs);
 			if (diffsThatExist.contains("Normal"))
@@ -122,47 +98,6 @@ class FreeplayState extends MusicBeatState
 			trace('loaded diffs for ' + meta.songName);
 			songs.push(meta);
 		}
-
-		trace("tryin to load sm files");
-
-		#if sys
-		for (i in FileSystem.readDirectory("assets/sm/"))
-		{
-			trace(i);
-			if (FileSystem.isDirectory("assets/sm/" + i))
-			{
-				trace("Reading SM file dir " + i);
-				for (file in FileSystem.readDirectory("assets/sm/" + i))
-				{
-					if (file.contains(" "))
-						FileSystem.rename("assets/sm/" + i + "/" + file, "assets/sm/" + i + "/" + file.replace(" ", "_"));
-					if (file.endsWith(".sm") && !FileSystem.exists("assets/sm/" + i + "/converted.json"))
-					{
-						trace("reading " + file);
-						var file:SMFile = SMFile.loadFile("assets/sm/" + i + "/" + file.replace(" ", "_"));
-						trace("Converting " + file.header.TITLE);
-						var data = file.convertToFNF("assets/sm/" + i + "/converted.json");
-						var meta = new SongMetadata(file.header.TITLE, 0, "sm", file, "assets/sm/" + i);
-						songs.push(meta);
-						var song = Song.loadFromJsonRAW(data);
-						songData.set(file.header.TITLE, [song, song, song]);
-					}
-					else if (FileSystem.exists("assets/sm/" + i + "/converted.json") && file.endsWith(".sm"))
-					{
-						trace("reading " + file);
-						var file:SMFile = SMFile.loadFile("assets/sm/" + i + "/" + file.replace(" ", "_"));
-						trace("Converting " + file.header.TITLE);
-						var data = file.convertToFNF("assets/sm/" + i + "/converted.json");
-						var meta = new SongMetadata(file.header.TITLE, 0, "sm", file, "assets/sm/" + i);
-						songs.push(meta);
-						var song = Song.loadFromJsonRAW(File.getContent("assets/sm/" + i + "/converted.json"));
-						trace("got content lol");
-						songData.set(file.header.TITLE, [song, song, song]);
-					}
-				}
-			}
-		}
-		#end
 
 		var isDebug:Bool = false;
 
@@ -406,23 +341,11 @@ class FreeplayState extends MusicBeatState
 				return;
 			}
 
-			PlayState.SONG = Song.conversionChecks(hmm);
+			PlayState.SONG = hmm;
 			PlayState.isStoryMode = false;
 			PlayState.storyDifficulty = curDifficulty;
 			PlayState.storyWeek = songs[curSelected].week;
 			trace('CUR WEEK' + PlayState.storyWeek);
-			#if sys
-			if (songs[curSelected].songCharacter == "sm")
-			{
-				PlayState.isSM = true;
-				PlayState.sm = songs[curSelected].sm;
-				PlayState.pathToSm = songs[curSelected].path;
-			}
-			else
-				PlayState.isSM = false;
-			#else
-			PlayState.isSM = false;
-			#end
 
 			PlayState.songMultiplier = rate;
 
@@ -505,21 +428,12 @@ class FreeplayState extends MusicBeatState
 		// lerpScore = 0;
 		#end
 
+		trace(songs[curSelected].songName);
 		diffCalcText.text = 'RATING: ${DiffCalc.CalculateDiff(songData.get(songs[curSelected].songName)[curDifficulty])}';
 		diffText.text = CoolUtil.difficultyFromInt(curDifficulty).toUpperCase();
 
 		#if PRELOAD_ALL
-		if (songs[curSelected].songCharacter == "sm")
-		{
-			var data = songs[curSelected];
-			trace("Loading " + data.path + "/" + data.sm.header.MUSIC);
-			var bytes = File.getBytes(data.path + "/" + data.sm.header.MUSIC);
-			var sound = new Sound();
-			sound.loadCompressedDataFromByteArray(bytes.getData(), bytes.length);
-			FlxG.sound.playMusic(sound);
-		}
-		else
-			FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
+		FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
 		#end
 
 		var hmm;
@@ -569,29 +483,15 @@ class SongMetadata
 {
 	public var songName:String = "";
 	public var week:Int = 0;
-	#if sys
-	public var sm:SMFile;
-	public var path:String;
-	#end
+
 	public var songCharacter:String = "";
 
 	public var diffs = [];
 
-	#if sys
-	public function new(song:String, week:Int, songCharacter:String, ?sm:SMFile = null, ?path:String = "")
-	{
-		this.songName = song;
-		this.week = week;
-		this.songCharacter = songCharacter;
-		this.sm = sm;
-		this.path = path;
-	}
-	#else
 	public function new(song:String, week:Int, songCharacter:String)
 	{
 		this.songName = song;
 		this.week = week;
 		this.songCharacter = songCharacter;
 	}
-	#end
 }

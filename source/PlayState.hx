@@ -1,70 +1,31 @@
 package;
 
-import Song.Event;
-import openfl.media.Sound;
-#if sys
-import sys.io.File;
-import smTools.SMFile;
-#end
-import openfl.ui.KeyLocation;
-import openfl.events.Event;
-import haxe.EnumTools;
-import openfl.ui.Keyboard;
 import openfl.events.KeyboardEvent;
 import Replay.Ana;
 import Replay.Analysis;
 import flixel.input.keyboard.FlxKey;
-import haxe.Exception;
-import openfl.geom.Matrix;
-import openfl.display.BitmapData;
-import openfl.utils.AssetType;
-import lime.graphics.Image;
-import flixel.graphics.FlxGraphic;
-import openfl.utils.AssetManifest;
-import openfl.utils.AssetLibrary;
-import flixel.system.FlxAssets;
-import lime.app.Application;
-import lime.media.AudioContext;
-import lime.media.AudioManager;
 import openfl.Lib;
 import Section.SwagSection;
 import Song.SwagSong;
-import WiggleEffect.WiggleEffectType;
 import flixel.FlxBasic;
 import flixel.FlxCamera;
 import flixel.FlxG;
-import flixel.FlxGame;
 import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.FlxState;
 import flixel.FlxSubState;
-import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.effects.FlxTrail;
-import flixel.addons.effects.FlxTrailArea;
-import flixel.addons.effects.chainable.FlxEffectSprite;
-import flixel.addons.effects.chainable.FlxWaveEffect;
 import flixel.addons.transition.FlxTransitionableState;
-import flixel.graphics.atlas.FlxAtlas;
-import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
-import flixel.math.FlxRect;
 import flixel.sound.FlxSound;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.ui.FlxBar;
-import flixel.util.FlxCollision;
 import flixel.util.FlxColor;
 import flixel.util.FlxSort;
-import flixel.util.FlxStringUtil;
 import flixel.util.FlxTimer;
-import haxe.Json;
-import lime.utils.Assets;
-import openfl.display.BlendMode;
-import openfl.display.StageQuality;
-import openfl.filters.ShaderFilter;
 #if cpp
 import Sys;
 import sys.FileSystem;
@@ -105,14 +66,7 @@ class PlayState extends MusicBeatState
 	var songLength:Float = 0;
 	var kadeEngineWatermark:FlxText;
 
-
 	private var vocals:FlxSound;
-
-	public static var isSM:Bool = false;
-	#if sys
-	public static var sm:SMFile;
-	public static var pathToSm:String;
-	#end
 
 	public var originalX:Float;
 
@@ -177,8 +131,6 @@ class PlayState extends MusicBeatState
 
 	public static var offsetTesting:Bool = false;
 
-	public var isSMFile:Bool = false;
-
 	var notesHitArray:Array<Date> = [];
 	var currentFrames:Int = 0;
 	var idleToBeat:Bool = false; // change if bf and dad would idle to the beat of the song
@@ -193,8 +145,6 @@ class PlayState extends MusicBeatState
 	public var currentSection:SwagSection;
 
 	var fc:Bool = true;
-
-	var wiggleShit:WiggleEffect = new WiggleEffect();
 
 	var talking:Bool = true;
 
@@ -325,39 +275,6 @@ class PlayState extends MusicBeatState
 		Conductor.changeBPM(SONG.bpm);
 
 		Conductor.bpm = SONG.bpm;
-
-		if (SONG.eventObjects == null)
-		{
-			SONG.eventObjects = [new Song.Event("Init BPM", 0, SONG.bpm, "BPM Change")];
-		}
-
-		TimingStruct.clearTimings();
-
-		var currentIndex = 0;
-		var endBeat:Int = 99999;
-		for (i in SONG.eventObjects)
-		{
-			if (i.type == "BPM Change")
-			{
-				TimingStruct.addTiming(i.position, i.value, endBeat, 0); // offset in this case = start time since we don't have a offset
-
-				if (currentIndex != 0)
-				{
-					var data = TimingStruct.AllTimings[currentIndex - 1];
-					data.endBeat = i.position;
-					data.length = (data.endBeat - data.startBeat) / (data.bpm / 60);
-					TimingStruct.AllTimings[currentIndex].startTime = data.startTime + data.length;
-				}
-
-				currentIndex++;
-			}
-			else
-				// do smth
-			{
-			}
-		}
-
-		recalculateAllSectionTimes();
 
 		trace('INFORMATION ABOUT WHAT U PLAYIN WIT:\nFRAMES: ' + PlayStateChangeables.safeFrames + '\nZONE: ' + Conductor.safeZoneOffset + '\nTS: '
 			+ Conductor.timeScale + '\nBotPlay : ' + PlayStateChangeables.botPlay);
@@ -742,11 +659,11 @@ class PlayState extends MusicBeatState
 		if (PlayStateChangeables.botPlay && !loadRep)
 			add(botPlayState);
 
-		iconP1 = new HealthIcon(boyfriend.curCharacter, true);
+		iconP1 = new HealthIcon(boyfriend.icon, true);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
 		add(iconP1);
 
-		iconP2 = new HealthIcon(dad.curCharacter, false);
+		iconP2 = new HealthIcon(dad.icon, false);
 		iconP2.y = healthBar.y - (iconP2.height / 2);
 		add(iconP2);
 
@@ -1064,7 +981,8 @@ class PlayState extends MusicBeatState
 			case 39:
 				data = 3;
 		}
-
+		if (data == -1)
+			return;
 		for (i in 0...binds.length) // binds
 		{
 			if (binds[i].toLowerCase() == key.toLowerCase())
@@ -1112,7 +1030,8 @@ class PlayState extends MusicBeatState
 			case 39:
 				data = 3;
 		}
-
+		if (data == -1)
+			return;
 		for (i in 0...binds.length) // binds
 		{
 			if (binds[i].toLowerCase() == key.toLowerCase())
@@ -1224,8 +1143,6 @@ class PlayState extends MusicBeatState
 			vocals.time = startTime;
 		Conductor.songPosition = startTime;
 
-
-
 		trace("pitched inst and vocals to " + songMultiplier);
 	}
 
@@ -1252,20 +1169,7 @@ class PlayState extends MusicBeatState
 
 		if (!paused)
 		{
-			#if sys
-			if (!isStoryMode && isSM)
-			{
-				trace("Loading " + pathToSm + "/" + sm.header.MUSIC);
-				var bytes = File.getBytes(pathToSm + "/" + sm.header.MUSIC);
-				var sound = new Sound();
-				sound.loadCompressedDataFromByteArray(bytes.getData(), bytes.length);
-				FlxG.sound.playMusic(sound);
-			}
-			else
-				FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song), 1, false);
-			#else
 			FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song), 1, false);
-			#end
 		}
 
 		FlxG.sound.music.onComplete = endSong;
@@ -1273,8 +1177,8 @@ class PlayState extends MusicBeatState
 
 		if (SONG.needsVoices)
 			FlxG.sound.cache(Paths.voices(PlayState.SONG.song));
-		if (!PlayState.isSM)
-			FlxG.sound.cache(Paths.inst(PlayState.SONG.song));
+
+		FlxG.sound.cache(Paths.inst(PlayState.SONG.song));
 
 		// Song duration in a float, useful for the time left feature
 		songLength = FlxG.sound.music.length / 1000;
@@ -1334,11 +1238,6 @@ class PlayState extends MusicBeatState
 
 		var songPath = 'assets/data/' + songLowercase + '/';
 
-		#if sys
-		if (isSM && !isStoryMode)
-			songPath = pathToSm;
-		#end
-
 		for (file in sys.FileSystem.readDirectory(songPath))
 		{
 			var path = haxe.io.Path.join([songPath, file]);
@@ -1389,7 +1288,7 @@ class PlayState extends MusicBeatState
 				if (!gottaHitNote && PlayStateChangeables.Optimize)
 					continue;
 
-				swagNote.sustainLength = TimingStruct.getTimeFromBeat((TimingStruct.getBeatFromTime(songNotes[2])));
+				swagNote.sustainLength = !(songNotes[2] is String) ? songNotes[2] : 0.0;
 				swagNote.scrollFactor.set(0, 0);
 
 				var susLength:Float = swagNote.sustainLength;
@@ -1606,8 +1505,6 @@ class PlayState extends MusicBeatState
 		Conductor.songPosition = FlxG.sound.music.time;
 		vocals.time = FlxG.sound.music.time;
 		vocals.play();
-
-	
 	}
 
 	private var paused:Bool = false;
@@ -1621,10 +1518,6 @@ class PlayState extends MusicBeatState
 	public var stopUpdate = false;
 
 	public var currentBPM = 0;
-
-	public var updateFrame = 0;
-
-	public var pastScrollChanges:Array<Song.Event> = [];
 
 	override public function update(elapsed:Float)
 	{
@@ -1656,79 +1549,6 @@ class PlayState extends MusicBeatState
 					endSong();
 				}
 			}
-		}
-
-		if (updateFrame == 4)
-		{
-			TimingStruct.clearTimings();
-
-			var currentIndex = 0;
-			for (i in SONG.eventObjects)
-			{
-				if (i.type == "BPM Change")
-				{
-					var beat:Float = i.position;
-
-					var endBeat:Float = Math.POSITIVE_INFINITY;
-
-					var bpm = i.value;
-
-					TimingStruct.addTiming(beat, bpm, endBeat, 0); // offset in this case = start time since we don't have a offset
-
-					if (currentIndex != 0)
-					{
-						var data = TimingStruct.AllTimings[currentIndex - 1];
-						data.endBeat = beat;
-						data.length = (data.endBeat - data.startBeat) / (data.bpm / 60);
-						var step = ((60 / data.bpm) * 1000) / 4;
-						TimingStruct.AllTimings[currentIndex].startStep = Math.floor(((data.endBeat / (data.bpm / 60)) * 1000) / step);
-						TimingStruct.AllTimings[currentIndex].startTime = data.startTime + data.length;
-					}
-
-					currentIndex++;
-				}
-			}
-
-			updateFrame++;
-		}
-		else if (updateFrame != 5)
-			updateFrame++;
-
-		if (FlxG.sound.music.playing)
-		{
-			var timingSeg = TimingStruct.getTimingAtBeat(curDecimalBeat);
-
-			if (timingSeg != null)
-			{
-				var timingSegBpm = timingSeg.bpm;
-
-				if (timingSegBpm != Conductor.bpm)
-				{
-					trace("BPM CHANGE to " + timingSegBpm);
-					Conductor.changeBPM(timingSegBpm, false);
-					Conductor.crochet = ((60 / (timingSegBpm) * 1000)) / songMultiplier;
-					Conductor.stepCrochet = Conductor.crochet / 4;
-				}
-			}
-
-			var newScroll = 1.0;
-
-			for (i in SONG.eventObjects)
-			{
-				switch (i.type)
-				{
-					case "Scroll Speed Change":
-						if (i.position <= curDecimalBeat && !pastScrollChanges.contains(i))
-						{
-							pastScrollChanges.push(i);
-							trace("SCROLL SPEED CHANGE to " + i.value);
-							newScroll = i.value;
-						}
-				}
-			}
-
-			if (newScroll != 0)
-				PlayStateChangeables.scrollSpeed *= newScroll;
 		}
 
 		if (PlayStateChangeables.botPlay && FlxG.keys.justPressed.ONE)
@@ -1872,7 +1692,7 @@ class PlayState extends MusicBeatState
 			if (Conductor.songPosition >= 0)
 				startSong();
 		}
-		
+
 		if (songStarted)
 		{
 			// Conductor.songPosition = FlxG.sound.music.time;
@@ -1883,7 +1703,7 @@ class PlayState extends MusicBeatState
 			}*/
 			songPositionBar = (Conductor.songPosition - songLength) / 1000;
 
-			currentSection = getSectionByTime(Conductor.songPosition);
+			currentSection = SONG.notes[Math.floor(curDecSec)] ?? SONG.notes[0];
 
 			if (!paused)
 			{
@@ -2213,7 +2033,7 @@ class PlayState extends MusicBeatState
 
 					var altAnim:String = "";
 
-					if (currentSection != null && currentSection.CPUAltAnim || daNote.isAlt)
+					if (currentSection != null && currentSection.altAnim || daNote.isAlt)
 						altAnim = '-alt';
 
 					final singData:Int = Std.int(Math.abs(daNote.noteData));
@@ -2379,47 +2199,6 @@ class PlayState extends MusicBeatState
 		if (FlxG.keys.justPressed.ONE)
 			endSong();
 		#end
-	}
-
-	public function getSectionByTime(ms:Float):SwagSection
-	{
-		for (i in SONG.notes)
-		{
-			var start = TimingStruct.getTimeFromBeat((TimingStruct.getBeatFromTime(i.startTime)));
-			var end = TimingStruct.getTimeFromBeat((TimingStruct.getBeatFromTime(i.endTime)));
-
-			if (ms >= start && ms < end)
-			{
-				return i;
-			}
-		}
-
-		return null;
-	}
-
-	function recalculateAllSectionTimes()
-	{
-		trace("RECALCULATING SECTION TIMES");
-
-		for (i in 0...SONG.notes.length) // loops through sections
-		{
-			var section = SONG.notes[i];
-
-			var currentBeat = 4 * i;
-
-			var currentSeg = TimingStruct.getTimingAtBeat(currentBeat);
-
-			if (currentSeg == null)
-				return;
-
-			var start:Float = (currentBeat - currentSeg.startBeat) / ((currentSeg.bpm) / 60);
-
-			section.startTime = (currentSeg.startTime + start) * 1000;
-
-			if (i != 0)
-				SONG.notes[i - 1].endTime = section.startTime;
-			section.endTime = Math.POSITIVE_INFINITY;
-		}
 	}
 
 	function endSong():Void
@@ -2627,6 +2406,7 @@ class PlayState extends MusicBeatState
 		//
 
 		var rating:FlxSprite = new FlxSprite();
+
 		var score:Float = 350;
 
 		if (FlxG.save.data.accuracyMod == 1)
@@ -2676,7 +2456,7 @@ class PlayState extends MusicBeatState
 		if (daRating != 'shit' || daRating != 'bad')
 		{
 			songScore += Math.round(score);
-
+			
 			/* if (combo > 60)
 					daRating = 'sick';
 				else if (combo > 12)
@@ -2706,6 +2486,7 @@ class PlayState extends MusicBeatState
 				rating.x = FlxG.save.data.changedHitX;
 				rating.y = FlxG.save.data.changedHitY;
 			}
+			
 			rating.acceleration.y = 550;
 			rating.velocity.y -= FlxG.random.int(140, 175);
 			rating.velocity.x -= FlxG.random.int(0, 10);
@@ -3403,18 +3184,14 @@ class PlayState extends MusicBeatState
 				});
 			}
 
-			if (!note.isSustainNote)
-			{
-				note.kill();
-				notes.remove(note, true);
-				note.destroy();
-			}
-			else
-			{
-				note.wasGoodHit = true;
-			}
+	
+
+			note.wasGoodHit = true;
 			if (!note.isSustainNote)
 				updateAccuracy();
+					note.kill();
+			notes.remove(note, true);
+			note.destroy();
 		}
 	}
 
@@ -3532,8 +3309,8 @@ class PlayState extends MusicBeatState
 	function lightningStrikeShit():Void
 	{
 		FlxG.sound.play(Paths.soundRandom('thunder_', 1, 2));
-		Stage.swagBacks['halloweenBG'].animation.play('lightning');
 
+		FlxG.camera.flash();
 		lightningStrikeBeat = curBeat;
 		lightningOffset = FlxG.random.int(8, 24);
 
@@ -3603,16 +3380,14 @@ class PlayState extends MusicBeatState
 
 		if (currentSection != null)
 		{
-			// else
-			// Conductor.changeBPM(SONG.bpm);
+			if (currentSection.changeBPM && Conductor.bpm != currentSection.bpm)
+				Conductor.changeBPM(currentSection.bpm);
 
 			// Dad doesnt interupt his own notes
 			if ((!dad.animation.curAnim.name.startsWith("sing")) && dad.curCharacter != 'gf')
 				if ((curBeat % idleBeat == 0 || !idleToBeat) || dad.curCharacter == "spooky")
-					dad.dance(idleToBeat, currentSection.CPUAltAnim);
+					dad.dance(idleToBeat, currentSection.altAnim);
 		}
-		// FlxG.log.add('change bpm' + SONG.notes[Std.int(curStep / 16)].changeBPM);
-		wiggleShit.update(Conductor.crochet);
 
 		if (FlxG.save.data.camzoom && Conductor.bpm < 340)
 		{
@@ -3651,7 +3426,7 @@ class PlayState extends MusicBeatState
 
 			if (!boyfriend.animation.curAnim.name.startsWith("sing") && (curBeat % idleBeat == 0 || !idleToBeat))
 			{
-				boyfriend.playAnim('idle' + ((currentSection.playerAltAnim
+				boyfriend.playAnim('idle' + ((currentSection.altAnim
 					&& boyfriend.animation.getByName('idle-alt') != null) ? '-alt' : ''), idleToBeat);
 			}
 
@@ -3737,114 +3512,6 @@ class PlayState extends MusicBeatState
 					lightningStrikeShit();
 				}
 			}
-		}
-	}
-
-	public var cleanedSong:SwagSong;
-
-	function poggers(?cleanTheSong = false)
-	{
-		var notes = [];
-
-		if (cleanTheSong)
-		{
-			cleanedSong = SONG;
-
-			for (section in cleanedSong.notes)
-			{
-				var removed = [];
-
-				for (note in section.sectionNotes)
-				{
-					// commit suicide
-					var old = note[0];
-					if (note[0] < section.startTime)
-					{
-						notes.push(note);
-						removed.push(note);
-					}
-					if (note[0] > section.endTime)
-					{
-						notes.push(note);
-						removed.push(note);
-					}
-				}
-
-				for (i in removed)
-				{
-					section.sectionNotes.remove(i);
-				}
-			}
-
-			for (section in cleanedSong.notes)
-			{
-				var saveRemove = [];
-
-				for (i in notes)
-				{
-					if (i[0] >= section.startTime && i[0] < section.endTime)
-					{
-						saveRemove.push(i);
-						section.sectionNotes.push(i);
-					}
-				}
-
-				for (i in saveRemove)
-					notes.remove(i);
-			}
-
-			trace("FUCK YOU BITCH FUCKER CUCK SUCK BITCH " + cleanedSong.notes.length);
-
-			SONG = cleanedSong;
-		}
-		else
-		{
-			for (section in SONG.notes)
-			{
-				var removed = [];
-
-				for (note in section.sectionNotes)
-				{
-					// commit suicide
-					var old = note[0];
-					if (note[0] < section.startTime)
-					{
-						notes.push(note);
-						removed.push(note);
-					}
-					if (note[0] > section.endTime)
-					{
-						notes.push(note);
-						removed.push(note);
-					}
-				}
-
-				for (i in removed)
-				{
-					section.sectionNotes.remove(i);
-				}
-			}
-
-			for (section in SONG.notes)
-			{
-				var saveRemove = [];
-
-				for (i in notes)
-				{
-					if (i[0] >= section.startTime && i[0] < section.endTime)
-					{
-						saveRemove.push(i);
-						section.sectionNotes.push(i);
-					}
-				}
-
-				for (i in saveRemove)
-					notes.remove(i);
-			}
-
-			trace("FUCK YOU BITCH FUCKER CUCK SUCK BITCH " + cleanedSong.notes.length);
-
-			SONG = cleanedSong;
 		}
 	}
 

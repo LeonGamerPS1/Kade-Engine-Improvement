@@ -26,7 +26,7 @@ class DiffCalc
         // cleaned notes
         var cleanedNotes:Array<SmallNote> = [];
 
-        if (song.notes == null)
+        if (song == null ||song.notes == null)
             return 0.0;
 
         if (song.notes.length == 0)

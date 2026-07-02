@@ -93,7 +93,6 @@ class Note extends FlxSprite
 		{
 			this.strumTime = strumTime;
 			rStrumTime = strumTime;
-			
 		}
 
 		if (this.strumTime < 0)
@@ -263,7 +262,7 @@ class Note extends FlxSprite
 		{
 			if (isSustainNote)
 			{
-				if (strumTime - Conductor.songPosition <= ((166 * Conductor.timeScale) * PlayState.songMultiplier * 0.5)
+				if (strumTime - Conductor.songPosition <= ((166 * Conductor.timeScale) * PlayState.songMultiplier * 0)
 					&& strumTime - Conductor.songPosition >= ((-166 * Conductor.timeScale) * PlayState.songMultiplier))
 					canBeHit = true;
 				else
@@ -303,19 +302,20 @@ class Note extends FlxSprite
 		if ((mustPress || !ignoreNote) && (wasGoodHit || (prevNote.wasGoodHit && !canBeHit)))
 		{
 			var swagRect:FlxRect = clipRect;
+	
 			if (swagRect == null)
 				swagRect = new FlxRect(0, 0, frameWidth, frameHeight);
 
 			if (flipY)
 			{
-				if (y - offset.y * scale.y + height >= center)
+				if (y + height >= center)
 				{
 					swagRect.width = frameWidth;
 					swagRect.height = (center - y) / scale.y;
 					swagRect.y = frameHeight - swagRect.height;
 				}
 			}
-			else if (y + offset.y * scale.y <= center)
+			else if (y <= center)
 			{
 				swagRect.y = (center - y) / scale.y;
 				swagRect.width = width / scale.x;

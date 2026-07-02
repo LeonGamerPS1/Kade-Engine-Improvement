@@ -1,10 +1,5 @@
 package;
 import haxe.Exception;
-#if sys
-import smTools.SMFile;
-import sys.FileSystem;
-import sys.io.File;
-#end
 import openfl.geom.Matrix;
 import openfl.display.BitmapData;
 import flixel.sound.FlxSound;
