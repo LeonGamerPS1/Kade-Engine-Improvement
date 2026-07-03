@@ -24,7 +24,7 @@
 			},
 			{
 				"name": "lime",
-				"version": "8.3.2"
+				"version": "8.2.2"
 			},
 			{
 				"name": "openfl",
@@ -36,7 +36,8 @@
 				"branch": "experimental"
 			},
 			{
-				"name": "hxcpp"
+				"name": "hxcpp",
+				"link":"https://github.com/haxefoundation/hxcpp"
 			}
 		]
 	}
