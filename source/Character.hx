@@ -33,26 +33,6 @@ class Character extends FlxAnimate
 
 		switch (curCharacter)
 		{
-			case 'gf':
-				// GIRLFRIEND CODE
-				tex = Paths.getSparrowAtlas('characters/GF_assets', 'shared');
-				frames = tex;
-				animation.addByPrefix('cheer', 'GF Cheer', 24, false);
-				animation.addByPrefix('singLEFT', 'GF left note', 24, false);
-				animation.addByPrefix('singRIGHT', 'GF Right Note', 24, false);
-				animation.addByPrefix('singUP', 'GF Up Note', 24, false);
-				animation.addByPrefix('singDOWN', 'GF Down Note', 24, false);
-				animation.addByIndices('sad', 'gf sad', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "", 24, false);
-				animation.addByIndices('danceLeft', 'GF Dancing Beat', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
-				animation.addByIndices('danceRight', 'GF Dancing Beat', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
-				animation.addByIndices('hairBlow', "GF Dancing Beat Hair blowing", [0, 1, 2, 3], "", 24);
-				animation.addByIndices('hairFall', "GF Dancing Beat Hair Landing", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], "", 24, false);
-				animation.addByPrefix('scared', 'GF FEAR', 24);
-
-				loadOffsetFile(curCharacter);
-
-				playAnim('danceRight');
-
 			case 'gf-christmas':
 				tex = Paths.getSparrowAtlas('characters/gfChristmas', 'shared');
 				frames = tex;
@@ -417,8 +397,8 @@ class Character extends FlxAnimate
 	function loadJsonChar(curChar:String)
 	{
 		this.curCharacter = curChar;
-		final path = 'assets/data/chars/$curChar.json';
-		final fallbackPath = 'assets/data/chars/gf.json';
+		final path = 'assets/chars/$curChar.json';
+		final fallbackPath = 'assets/chars/gf.json';
 
 		// 1. Prüfen, welcher Pfad existiert
 		var finalPath:String = "";
@@ -468,23 +448,32 @@ class Character extends FlxAnimate
 
 			lastChar = curCharacter;
 			var atlasAnimate = OpenFlAssets.exists(Paths.getPath('images/${json.texture.path}' + '/Animation.json', TEXT, json.texture.library));
+			//throw(Paths.getPath('images/${json.texture.path}/Animation.json', TEXT, json.texture.library)
+			//		.replace('Animation.json', ''));
 			if (!atlasAnimate)
 				frames = Paths.getSparrowAtlas(json.texture.path, json.texture.library);
 			else
 				frames = FlxAnimateFrames.fromAnimate(Paths.getPath('images/${json.texture.path}/Animation.json', TEXT, json.texture.library)
-					.replace('Animation.json', ''));
-
+					.replace('/Animation.json', ''));
+		
 			scale.set(json.scale.x, json.scale.y);
 			skew.set(json.texture.skew.x, json.texture.skew.y);
 			antialiasing = json.texture.blur;
-
+		
 			for (anim in json.animation_data.map)
 			{
-				if(anim.indices != null)
+				if (anim.indices != null)
 					addByIndices(anim.animationName, anim.prefix, anim.indices, anim.repeat ?? false, anim.fps ?? 24);
-				else 
+				else
 					addByPrefix(anim.animationName, anim.prefix, anim.repeat ?? false, anim.fps ?? 24);
+				addOffset(anim.animationName, anim.offsets.x, anim.offsets.y);
 			}
+			playAnim(json.animation_data.defaultAnim);
+			updateHitbox();
+			playAnim(json.animation_data.defaultAnim);
+
+			flipY = json.flip.y;
+			flipX = json.flip.x != isPlayer;
 		}
 	}
 
@@ -519,7 +508,7 @@ class Character extends FlxAnimate
 	{
 		if (!curCharacter.startsWith('bf'))
 		{
-			if (animation.curAnim.name.startsWith('sing'))
+			if (animation.curAnim != null && animation.curAnim.name.startsWith('sing'))
 			{
 				holdTimer += elapsed;
 			}
@@ -539,7 +528,7 @@ class Character extends FlxAnimate
 		switch (curCharacter)
 		{
 			case 'gf':
-				if (animation.curAnim.name == 'hairFall' && animation.curAnim.finished)
+				if ((animation.name ?? '') == 'hairFall' && animation.finished)
 					playAnim('danceRight');
 		}
 
@@ -558,7 +547,7 @@ class Character extends FlxAnimate
 			switch (curCharacter)
 			{
 				case 'gf' | 'gf-christmas' | 'gf-car' | 'gf-pixel':
-					if (!animation.curAnim.name.startsWith('hair'))
+					if (!(animation.name ?? '').startsWith('hair'))
 					{
 						danced = !danced;
 

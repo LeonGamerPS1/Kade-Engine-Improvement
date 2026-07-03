@@ -210,7 +210,7 @@ class Note extends FlxSprite
 			flipY = true;
 
 		var stepHeight = (((0.45 * Conductor.stepCrochet)) * FlxMath.roundDecimal(PlayStateChangeables.scrollSpeed == 1 ? PlayState.SONG.speed : PlayStateChangeables.scrollSpeed,
-			2));
+			2)) + 0.27;
 
 		// we can't divide step height cuz if we do uh it'll fucking lag the shit out of the game
 

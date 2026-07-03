@@ -4,7 +4,7 @@
   "texture": {
     "library": "shared",
     "path": "characters/GF_assets",
-    "blur": false,
+    "blur": true,
     "skew": { "x": 1, "y": 1 }
   },
   "global_offset": { "x": 0, "y": 0 },
@@ -19,7 +19,21 @@
         "fps": 24,
         "prefix": "GF Dancing Beat",
         "indices": [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
-        "offsets": { "x": 0, "y": -9 },
+        "offsets": { "x": 0, "y": 0 },
+        "repeat": false
+      },
+      {
+        "animationName": "duckBlow",
+        "fps": 24,
+        "prefix": "GF Duck Hair Blowing",
+        "offsets": { "x": 0, "y": 0 },
+        "repeat": false
+      },
+      {
+        "animationName": "duck",
+        "fps": 24,
+        "prefix": "GF Duck",
+        "offsets": { "x": 0, "y": 0 },
         "repeat": false
       },
       {
@@ -27,9 +41,52 @@
         "fps": 24,
         "prefix": "GF Dancing Beat",
         "indices": [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
-        "offsets": { "x": 0, "y": -9 },
+        "offsets": { "x": 0, "y": 0 },
+        "repeat": false
+      },
+      {
+        "animationName": "singLEFT",
+        "fps": 24,
+        "prefix": "GF left note",
+        "offsets": { "x": 0, "y": 0 },
+        "repeat": false
+      },
+      {
+        "animationName": "singDOWN",
+        "fps": 24,
+        "prefix": "GF Down Note",
+        "offsets": { "x": 0, "y": 0 },
+        "repeat": false
+      },
+      {
+        "animationName": "singUP",
+        "fps": 24,
+        "prefix": "GF Up Note",
+        "offsets": { "x": 0, "y": 0 },
+        "repeat": false
+      },
+      {
+        "animationName": "singRIGHT",
+        "fps": 24,
+        "prefix": "GF Right Note",
+        "offsets": { "x": 0, "y": 0 },
+        "repeat": false
+      },
+      {
+        "animationName": "cheer",
+        "fps": 24,
+        "prefix": "GF Cheer",
+        "offsets": { "x": 0, "y": 0 },
+        "repeat": false
+      },
+      {
+        "animationName": "scared",
+        "fps": 24,
+        "prefix": "GF FEAR ",
+        "offsets": { "x": 0, "y": 0 },
         "repeat": false
       }
+       
     ]
   }
 }

@@ -1,0 +1,43 @@
+[
+	{
+		"profile": "default",
+		"pkgs": [
+			{
+				"name": "actuate",
+				"version": "1.9.0"
+			},
+			{
+				"name": "flixel",
+				"version": "5.8.0"
+			},
+			{
+				"name": "flixel-addons",
+				"version": "3.3.2"
+			},
+			{
+				"name": "flixel-ui",
+				"version": "2.6.4"
+			},
+			{
+				"name": "hscript",
+				"version": "2.7.0"
+			},
+			{
+				"name": "lime",
+				"version": "8.3.2"
+			},
+			{
+				"name": "openfl",
+				"version": "9.4.2"
+			},
+			{
+				"name": "flixel-animate",
+				"link": "https://github.com/MaybeMaru/flixel-animate",
+				"branch": "experimental"
+			},
+			{
+				"name": "hxcpp"
+			}
+		]
+	}
+]
