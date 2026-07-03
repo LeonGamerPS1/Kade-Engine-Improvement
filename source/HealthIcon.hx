@@ -1,5 +1,9 @@
 package;
 
+import flixel.math.FlxMath;
+import flixel.util.FlxDestroyUtil;
+import flixel.math.FlxPoint;
+import funkin.data.CharJson.DataIcon;
 import flixel.FlxG;
 import flixel.FlxSprite;
 
@@ -24,8 +28,6 @@ class HealthIcon extends FlxSprite
 		this.isPlayer = isPlayer;
 
 		isPlayer = isOldIcon = false;
-
-
 		changeIcon(char);
 	}
 
@@ -34,11 +36,22 @@ class HealthIcon extends FlxSprite
 		(isOldIcon = !isOldIcon) ? changeIcon("bf-old") : changeIcon(char);
 	}
 
+	var baseScale:FlxPoint = FlxPoint.get(1, 1);
+	var bopScale:FlxPoint = FlxPoint.get(1, 1);
+
+	public function loadFromData(data:DataIcon)
+	{
+		changeIcon(data?.iconName ?? 'dad');
+		scale.set(data?.scale?.x ?? 1, data?.scale?.y ?? 1);
+		antialiasing = data?.antialiasing ?? true;
+		updateHitbox();
+	}
+
 	public function changeIcon(char:String)
 	{
 		loadGraphic(Paths.image('icons/icon-' + char));
 		loadGraphic(Paths.image('icons/icon-' + char), true, Math.floor(frameWidth / 2), frameHeight);
-		if(char.endsWith('-pixel') || char.startsWith('senpai') || char.startsWith('spirit'))
+		if (char.endsWith('-pixel') || char.startsWith('senpai') || char.startsWith('spirit'))
 			antialiasing = false
 		else
 			antialiasing = FlxG.save.data.antialiasing;
@@ -52,5 +65,27 @@ class HealthIcon extends FlxSprite
 
 		if (sprTracker != null)
 			setPosition(sprTracker.x + sprTracker.width + 10, sprTracker.y - 30);
+	}
+
+	override function destroy()
+	{
+		baseScale = FlxDestroyUtil.put(baseScale);
+		bopScale = FlxDestroyUtil.put(bopScale);
+		super.destroy();
+	}
+
+	public function bump(mult:Float = 1)
+	{
+		scale.copyFrom(baseScale).scale(mult * bopScale.x, mult * bopScale.y);
+		updateHitbox();
+	}
+
+	public function bumpLerp(mult:Float = 1)
+	{
+		final LERP = Math.exp(-FlxG.elapsed * 8);
+		var iconLerpX = FlxMath.lerp(baseScale.x, scale.x, LERP);
+		var iconLerpY = FlxMath.lerp(baseScale.y, scale.y, LERP);
+		scale.set(iconLerpX, iconLerpY);
+		updateHitbox();
 	}
 }

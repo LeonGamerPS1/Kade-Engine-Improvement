@@ -661,10 +661,14 @@ class PlayState extends MusicBeatState
 
 		iconP1 = new HealthIcon(boyfriend.icon, true);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
+		iconP1.loadFromData(boyfriend.json?.texture?.healthIcon);
+		healthIcons.push(iconP1);
 		add(iconP1);
 
 		iconP2 = new HealthIcon(dad.icon, false);
 		iconP2.y = healthBar.y - (iconP2.height / 2);
+		iconP2.loadFromData(dad.json?.texture?.healthIcon);
+		healthIcons.push(iconP2);
 		add(iconP2);
 
 		strumLineNotes.cameras = [camHUD];
@@ -1727,15 +1731,8 @@ class PlayState extends MusicBeatState
 
 		if (!inCutscene && songStarted)
 			keyShit();
-		var lerp = 0.5;
-		final P1Lerp = FlxMath.lerp(1, iconP1.scale.x, lerp);
-		final P2Lerp = FlxMath.lerp(1, iconP2.scale.x, lerp);
-
-		iconP1.scale.set(P1Lerp, P1Lerp);
-		iconP2.scale.set(P2Lerp, P2Lerp);
-
-		iconP1.updateHitbox();
-		iconP2.updateHitbox();
+		for (icon in healthIcons)
+			icon.bumpLerp(Conductor.bpm < 340 ? 1 : 0.9);
 
 		var iconOffset:Int = 26;
 
@@ -1864,8 +1861,8 @@ class PlayState extends MusicBeatState
 
 			if (camFollow.x != dad.getMidpoint().x + 150 && !currentSection.mustHitSection)
 			{
-				var offsetX = 0;
-				var offsetY = 0;
+				var offsetX = dad.json?.camera_offset?.x ?? 0.0;
+				var offsetY = dad.json?.camera_offset?.y ?? 0.0;
 
 				camFollow.setPosition(dad.getMidpoint().x + 150 + offsetX, dad.getMidpoint().y - 100 + offsetY);
 
@@ -1883,8 +1880,8 @@ class PlayState extends MusicBeatState
 
 			if (currentSection.mustHitSection && camFollow.x != boyfriend.getMidpoint().x - 100)
 			{
-				var offsetX = 0;
-				var offsetY = 0;
+				var offsetX = boyfriend.json?.camera_offset.x ?? 0.0;
+				var offsetY = boyfriend.json?.camera_offset.y ?? 0.0;
 
 				camFollow.setPosition(boyfriend.getMidpoint().x - 100 + offsetX, boyfriend.getMidpoint().y - 100 + offsetY);
 
@@ -2456,7 +2453,7 @@ class PlayState extends MusicBeatState
 		if (daRating != 'shit' || daRating != 'bad')
 		{
 			songScore += Math.round(score);
-			
+
 			/* if (combo > 60)
 					daRating = 'sick';
 				else if (combo > 12)
@@ -2486,7 +2483,7 @@ class PlayState extends MusicBeatState
 				rating.x = FlxG.save.data.changedHitX;
 				rating.y = FlxG.save.data.changedHitY;
 			}
-			
+
 			rating.acceleration.y = 550;
 			rating.velocity.y -= FlxG.random.int(140, 175);
 			rating.velocity.x -= FlxG.random.int(0, 10);
@@ -3184,12 +3181,10 @@ class PlayState extends MusicBeatState
 				});
 			}
 
-	
-
 			note.wasGoodHit = true;
 			if (!note.isSustainNote)
 				updateAccuracy();
-					note.kill();
+			note.kill();
 			notes.remove(note, true);
 			note.destroy();
 		}
@@ -3355,6 +3350,7 @@ class PlayState extends MusicBeatState
 
 	var lightningStrikeBeat:Int = 0;
 	var lightningOffset:Int = 8;
+	var healthIcons:Array<HealthIcon> = [];
 
 	override function beatHit()
 	{
@@ -3404,19 +3400,10 @@ class PlayState extends MusicBeatState
 				camHUD.zoom += 0.03 / songMultiplier;
 			}
 		}
-		if (Conductor.bpm < 340)
-		{
-			iconP1.scale.set(1.2, 1.2);
-			iconP2.scale.set(1.2, 1.2);
-		}
-		else
-		{
-			iconP1.scale.set(1.1, 1.1);
-			iconP2.scale.set(1.1, 1.1);
-		}
 
-		iconP1.updateHitbox();
-		iconP2.updateHitbox();
+		for (icon in healthIcons)
+			icon.bump(Conductor.bpm < 340 ? 1 : 0.8);
+
 		if (!endingSong && currentSection != null)
 		{
 			if (curBeat % gfSpeed == 0)

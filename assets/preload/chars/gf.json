@@ -5,7 +5,8 @@
     "library": "shared",
     "path": "characters/GF_assets",
     "blur": true,
-    "skew": { "x": 1, "y": 1 }
+    "skew": { "x": 1, "y": 1 },
+    "healthicon": { "scale": {"x": 1, "y":1}, "antialiasing": true, "iconName": "gf" }
   },
   "global_offset": { "x": 0, "y": 0 },
   "camera_offset": { "x": 0, "y": 0 },
@@ -86,7 +87,6 @@
         "offsets": { "x": 0, "y": 0 },
         "repeat": false
       }
-       
     ]
   }
 }

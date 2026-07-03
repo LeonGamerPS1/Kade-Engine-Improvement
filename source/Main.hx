@@ -81,7 +81,6 @@ class Main extends Sprite
 		#if !mobile
 		fpsCounter = new FPS(10, 3, 0xFFFFFF);
 		addChild(fpsCounter);
-		toggleFPS(FlxG.save.data.fps);
 		#end
 	}
 
@@ -101,7 +100,6 @@ class Main extends Sprite
 
 	public function setFPSCap(cap:Float)
 	{
-		openfl.Lib.current.stage.frameRate = cap;
 		FlxG.drawFramerate = Math.floor(cap);
 		FlxG.updateFramerate = Math.floor(cap);
 	}
