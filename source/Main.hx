@@ -74,6 +74,16 @@ class Main extends Sprite
 
 		framerate = 60;
 
+			@:bypassAccessor @:privateAccess {
+			var old = FlxG.cameras;
+			var custom = new funkin.other.CustomCameraFrontEnd();
+
+			// Copy the existing camera list/state.
+			custom.list = old.list;
+			custom.defaults = old.defaults;
+
+			FlxG.cameras = custom;
+		}
 		game = new FlxGame(gameWidth, gameHeight, initialState, framerate, framerate, skipSplash, startFullscreen);
 
 		addChild(game);

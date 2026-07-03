@@ -256,11 +256,9 @@ class PlayState extends MusicBeatState
 		}
 
 		// var gameCam:FlxCamera = FlxG.camera;
-		camGame = new FlxCamera();
-		camHUD = new FlxCamera();
+		camHUD = new FlxCameraExt();
 		camHUD.bgColor.alpha = 0;
-
-		FlxG.cameras.reset(camGame);
+		camGame = FlxG.camera;
 		FlxG.cameras.add(camHUD, false);
 
 		camHUD.zoom = PlayStateChangeables.zoom;
@@ -665,6 +663,7 @@ class PlayState extends MusicBeatState
 		healthIcons.push(iconP1);
 		add(iconP1);
 
+		
 		iconP2 = new HealthIcon(dad.icon, false);
 		iconP2.y = healthBar.y - (iconP2.height / 2);
 		iconP2.loadFromData(dad.json?.texture?.healthIcon);
@@ -1915,7 +1914,7 @@ class PlayState extends MusicBeatState
 				FlxG.save.data.zoom = 1.2;
 
 			FlxG.camera.zoom = FlxMath.lerp(Stage.camZoom, FlxG.camera.zoom, 0.95);
-			camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, 0.95);
+			camHUD.zoom = FlxMath.lerp(PlayStateChangeables.zoom, camHUD.zoom, 0.95);
 		}
 
 		FlxG.watch.addQuick("curBPM", Conductor.bpm);
@@ -3204,7 +3203,7 @@ class PlayState extends MusicBeatState
 				spr.localAngle = daNote.originAngle;
 			}
 			if (!daNote.mustPress)
-				spr.r = 0.15;
+				spr.r = Conductor.stepCrochet * .001 * 1.1;
 		}
 	}
 

@@ -24,7 +24,8 @@ class GameOverState extends FlxTransitionableState
 	override function create()
 	{
 		var loser:FlxSprite = new FlxSprite(100, 100);
-		var loseTex = Paths.getSparrowAtlas('lose');
+		var loseframes =
+ Paths.getSparrowAtlas('lose');
 		loser.frames = loseTex;
 		loser.animation.addByPrefix('lose', 'lose', 24, false);
 		loser.animation.play('lose');

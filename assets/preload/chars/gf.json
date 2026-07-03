@@ -6,7 +6,7 @@
     "path": "characters/GF_assets",
     "blur": true,
     "skew": { "x": 1, "y": 1 },
-    "healthicon": { "scale": {"x": 1, "y":1}, "antialiasing": true, "iconName": "gf" }
+    "healthIcon": { "scale": {"x": 1, "y":1}, "antialiasing": true, "iconName": "gf" }
   },
   "global_offset": { "x": 0, "y": 0 },
   "camera_offset": { "x": 0, "y": 0 },

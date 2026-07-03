@@ -37,12 +37,13 @@ class HealthIcon extends FlxSprite
 	}
 
 	var baseScale:FlxPoint = FlxPoint.get(1, 1);
-	var bopScale:FlxPoint = FlxPoint.get(1, 1);
+	var bopScale:FlxPoint = FlxPoint.get(1.2, 1.2);
 
 	public function loadFromData(data:DataIcon)
 	{
-		changeIcon(data?.iconName ?? 'dad');
+		changeIcon(data?.iconName ?? char);
 		scale.set(data?.scale?.x ?? 1, data?.scale?.y ?? 1);
+		baseScale.set(data?.scale?.x ?? 1, data?.scale?.y ?? 1);
 		antialiasing = data?.antialiasing ?? true;
 		updateHitbox();
 	}
@@ -87,5 +88,12 @@ class HealthIcon extends FlxSprite
 		var iconLerpY = FlxMath.lerp(baseScale.y, scale.y, LERP);
 		scale.set(iconLerpX, iconLerpY);
 		updateHitbox();
+	}
+
+	override function updateHitbox()
+	{
+		centerOffsets();
+		centerOrigin();
+		super.updateHitbox();
 	}
 }

@@ -28,14 +28,14 @@ class Character extends FlxAnimate
 		curCharacter = character;
 		this.isPlayer = isPlayer;
 
-		var tex:FlxAtlasFrames;
 		antialiasing = FlxG.save.data.antialiasing;
 
 		switch (curCharacter)
 		{
 			case 'gf-christmas':
-				tex = Paths.getSparrowAtlas('characters/gfChristmas', 'shared');
-				frames = tex;
+				icon = 'gf';
+				frames = Paths.getSparrowAtlas('characters/gfChristmas', 'shared');
+
 				animation.addByPrefix('cheer', 'GF Cheer', 24, false);
 				animation.addByPrefix('singLEFT', 'GF left note', 24, false);
 				animation.addByPrefix('singRIGHT', 'GF Right Note', 24, false);
@@ -53,8 +53,9 @@ class Character extends FlxAnimate
 				playAnim('danceRight');
 
 			case 'gf-car':
-				tex = Paths.getSparrowAtlas('characters/gfCar', 'shared');
-				frames = tex;
+				icon = 'gf';
+				frames = Paths.getSparrowAtlas('characters/gfCar', 'shared');
+
 				animation.addByIndices('singUP', 'GF Dancing Beat Hair blowing CAR', [0], "", 24, false);
 				animation.addByIndices('danceLeft', 'GF Dancing Beat Hair blowing CAR', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
 				animation.addByIndices('danceRight', 'GF Dancing Beat Hair blowing CAR', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24,
@@ -65,8 +66,9 @@ class Character extends FlxAnimate
 				playAnim('danceRight');
 
 			case 'gf-pixel':
-				tex = Paths.getSparrowAtlas('characters/gfPixel', 'shared');
-				frames = tex;
+				icon = 'gf';
+				frames = Paths.getSparrowAtlas('characters/gfPixel', 'shared');
+
 				animation.addByIndices('singUP', 'GF IDLE', [2], "", 24, false);
 				animation.addByIndices('danceLeft', 'GF IDLE', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
 				animation.addByIndices('danceRight', 'GF IDLE', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
@@ -80,9 +82,10 @@ class Character extends FlxAnimate
 				antialiasing = false;
 
 			case 'dad':
+				icon = 'dad';
 				// DAD ANIMATION LOADING CODE
-				tex = Paths.getSparrowAtlas('characters/DADDY_DEAREST', 'shared');
-				frames = tex;
+				frames = Paths.getSparrowAtlas('characters/DADDY_DEAREST', 'shared');
+
 				animation.addByPrefix('idle', 'Dad idle dance', 24, false);
 				animation.addByPrefix('singUP', 'Dad Sing Note UP', 24, false);
 				animation.addByPrefix('singRIGHT', 'Dad Sing Note RIGHT', 24, false);
@@ -93,8 +96,9 @@ class Character extends FlxAnimate
 
 				playAnim('idle');
 			case 'spooky':
-				tex = Paths.getSparrowAtlas('characters/spooky_kids_assets', 'shared');
-				frames = tex;
+				icon = 'spooky';
+				frames = Paths.getSparrowAtlas('characters/spooky_kids_assets', 'shared');
+
 				animation.addByPrefix('singUP', 'spooky UP NOTE', 24, false);
 				animation.addByPrefix('singDOWN', 'spooky DOWN note', 24, false);
 				animation.addByPrefix('singLEFT', 'note sing left', 24, false);
@@ -106,8 +110,8 @@ class Character extends FlxAnimate
 
 				playAnim('danceRight');
 			case 'mom':
-				tex = Paths.getSparrowAtlas('characters/Mom_Assets', 'shared');
-				frames = tex;
+				icon = 'mom';
+				frames = Paths.getSparrowAtlas('characters/Mom_Assets', 'shared');
 
 				animation.addByPrefix('idle', "Mom Idle", 24, false);
 				animation.addByPrefix('singUP', "Mom Up Pose", 24, false);
@@ -122,8 +126,8 @@ class Character extends FlxAnimate
 				playAnim('idle');
 
 			case 'mom-car':
-				tex = Paths.getSparrowAtlas('characters/momCar', 'shared');
-				frames = tex;
+				icon = 'mom';
+				frames = Paths.getSparrowAtlas('characters/momCar', 'shared');
 
 				animation.addByPrefix('idle', "Mom Idle", 24, false);
 				animation.addByPrefix('singUP', "Mom Up Pose", 24, false);
@@ -137,8 +141,9 @@ class Character extends FlxAnimate
 
 				playAnim('idle');
 			case 'monster':
-				tex = Paths.getSparrowAtlas('characters/Monster_Assets', 'shared');
-				frames = tex;
+				icon = 'monster';
+				frames = Paths.getSparrowAtlas('characters/Monster_Assets', 'shared');
+
 				animation.addByPrefix('idle', 'monster idle', 24, false);
 				animation.addByPrefix('singUP', 'monster up note', 24, false);
 				animation.addByPrefix('singDOWN', 'monster down', 24, false);
@@ -148,8 +153,9 @@ class Character extends FlxAnimate
 				loadOffsetFile(curCharacter);
 				playAnim('idle');
 			case 'monster-christmas':
-				tex = Paths.getSparrowAtlas('characters/monsterChristmas', 'shared');
-				frames = tex;
+				icon = 'monster';
+				frames = Paths.getSparrowAtlas('characters/monsterChristmas', 'shared');
+
 				animation.addByPrefix('idle', 'monster idle', 24, false);
 				animation.addByPrefix('singUP', 'monster up note', 24, false);
 				animation.addByPrefix('singDOWN', 'monster down', 24, false);
@@ -159,8 +165,9 @@ class Character extends FlxAnimate
 				loadOffsetFile(curCharacter);
 				playAnim('idle');
 			case 'pico':
-				tex = Paths.getSparrowAtlas('characters/Pico_FNF_assetss', 'shared');
-				frames = tex;
+				icon = 'pico';
+				frames = Paths.getSparrowAtlas('characters/Pico_FNF_assetss', 'shared');
+
 				animation.addByPrefix('idle', "Pico Idle Dance", 24, false);
 				animation.addByPrefix('singUP', 'pico Up note0', 24, false);
 				animation.addByPrefix('singDOWN', 'Pico Down Note0', 24, false);
@@ -190,10 +197,8 @@ class Character extends FlxAnimate
 				flipX = true;
 
 			case 'bf':
-				var tex = Paths.getSparrowAtlas('characters/BOYFRIEND', 'shared');
-				frames = tex;
-
-				trace(tex.frames.length);
+				icon = 'bf';
+				frames = Paths.getSparrowAtlas('characters/BOYFRIEND', 'shared');
 
 				animation.addByPrefix('idle', 'BF idle dance', 24, false);
 				animation.addByPrefix('singUP', 'BF NOTE UP0', 24, false);
@@ -219,8 +224,9 @@ class Character extends FlxAnimate
 				flipX = true;
 
 			case 'bf-christmas':
-				var tex = Paths.getSparrowAtlas('characters/bfChristmas', 'shared');
-				frames = tex;
+				icon = 'bf';
+				frames = Paths.getSparrowAtlas('characters/bfChristmas', 'shared');
+
 				animation.addByPrefix('idle', 'BF idle dance', 24, false);
 				animation.addByPrefix('singUP', 'BF NOTE UP0', 24, false);
 				animation.addByPrefix('singLEFT', 'BF NOTE LEFT0', 24, false);
@@ -238,8 +244,9 @@ class Character extends FlxAnimate
 
 				flipX = true;
 			case 'bf-car':
-				var tex = Paths.getSparrowAtlas('characters/bfCar', 'shared');
-				frames = tex;
+				icon = 'bf';
+				frames = Paths.getSparrowAtlas('characters/bfCar', 'shared');
+
 				animation.addByPrefix('idle', 'BF idle dance', 24, false);
 				animation.addByPrefix('singUP', 'BF NOTE UP0', 24, false);
 				animation.addByPrefix('singLEFT', 'BF NOTE LEFT0', 24, false);
@@ -255,6 +262,7 @@ class Character extends FlxAnimate
 
 				flipX = true;
 			case 'bf-pixel':
+				icon = 'bf-pixel';
 				frames = Paths.getSparrowAtlas('characters/pixelBF', 'shared');
 				animation.addByPrefix('idle', 'BF IDLE', 24, false);
 				animation.addByPrefix('singUP', 'BF UP NOTE', 24, false);
@@ -280,6 +288,7 @@ class Character extends FlxAnimate
 
 				flipX = true;
 			case 'bf-pixel-dead':
+				icon = 'bf-pixel';
 				frames = Paths.getSparrowAtlas('characters/bfPixelsDEAD', 'shared');
 				animation.addByPrefix('singUP', "BF Dies pixel", 24, false);
 				animation.addByPrefix('firstDeath', "BF Dies pixel", 24, false);
@@ -296,6 +305,7 @@ class Character extends FlxAnimate
 				flipX = true;
 
 			case 'senpai':
+				icon = 'senpai';
 				frames = Paths.getSparrowAtlas('characters/senpai', 'shared');
 				animation.addByPrefix('idle', 'Senpai Idle', 24, false);
 				animation.addByPrefix('singUP', 'SENPAI UP NOTE', 24, false);
@@ -312,6 +322,7 @@ class Character extends FlxAnimate
 
 				antialiasing = false;
 			case 'senpai-angry':
+				icon = 'senpai';
 				frames = Paths.getSparrowAtlas('characters/senpai', 'shared');
 				animation.addByPrefix('idle', 'Angry Senpai Idle', 24, false);
 				animation.addByPrefix('singUP', 'Angry Senpai UP NOTE', 24, false);
@@ -328,6 +339,7 @@ class Character extends FlxAnimate
 				antialiasing = false;
 
 			case 'spirit':
+				icon = 'spirit';
 				frames = Paths.getPackerAtlas('characters/spirit', 'shared');
 				animation.addByPrefix('idle', "idle spirit_", 24, false);
 				animation.addByPrefix('singUP', "up_", 24, false);
@@ -345,6 +357,7 @@ class Character extends FlxAnimate
 				antialiasing = false;
 
 			case 'parents-christmas':
+				icon = 'parents';
 				frames = Paths.getSparrowAtlas('characters/mom_dad_christmas_assets', 'shared');
 				animation.addByPrefix('idle', 'Parent Christmas Idle', 24, false);
 				animation.addByPrefix('singUP', 'Parent Up Note Dad', 24, false);
@@ -448,18 +461,18 @@ class Character extends FlxAnimate
 
 			lastChar = curCharacter;
 			var atlasAnimate = OpenFlAssets.exists(Paths.getPath('images/${json.texture.path}' + '/Animation.json', TEXT, json.texture.library));
-			//throw(Paths.getPath('images/${json.texture.path}/Animation.json', TEXT, json.texture.library)
+			// throw(Paths.getPath('images/${json.texture.path}/Animation.json', TEXT, json.texture.library)
 			//		.replace('Animation.json', ''));
 			if (!atlasAnimate)
 				frames = Paths.getSparrowAtlas(json.texture.path, json.texture.library);
 			else
 				frames = FlxAnimateFrames.fromAnimate(Paths.getPath('images/${json.texture.path}/Animation.json', TEXT, json.texture.library)
 					.replace('/Animation.json', ''));
-		
+
 			scale.set(json.scale.x, json.scale.y);
 			skew.set(json.texture.skew.x, json.texture.skew.y);
 			antialiasing = json.texture.blur;
-		
+
 			for (anim in json.animation_data.map)
 			{
 				if (anim.indices != null)

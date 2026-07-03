@@ -82,9 +82,9 @@ class StagePositioningDebug extends FlxState
 		camFollow.screenCenter();
 		add(camFollow);
 
-		camHUD = new FlxCamera();
+		camHUD = new FlxCameraExt();
 		camHUD.bgColor.alpha = 0;
-		camGame = new FlxCamera();
+		camGame = new FlxCameraExt();
 		camGame.zoom = 0.7;
 		FlxG.cameras.add(camGame);
 		FlxG.cameras.add(camHUD);

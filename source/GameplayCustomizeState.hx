@@ -51,7 +51,7 @@ class GameplayCustomizeState extends MusicBeatState
 
 		super.create();
 
-		camHUD = new FlxCamera();
+		camHUD = new FlxCameraExt();
 		camHUD.bgColor.alpha = 0;
 		FlxG.cameras.add(camHUD);
 

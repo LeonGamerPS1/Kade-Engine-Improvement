@@ -54,9 +54,9 @@ class DiffOverview extends FlxSubState
         Conductor.songPosition = 0;
         Conductor.lastSongPos = 0;
         
-        camHUD = new FlxCamera();
+        camHUD = new FlxCameraExt();
         camHUD.bgColor.alpha = 0;
-        var camGame = new FlxCamera();
+        var camGame = new FlxCameraExt();
 
         FlxG.cameras.add(camGame);
 

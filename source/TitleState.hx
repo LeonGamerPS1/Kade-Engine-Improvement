@@ -50,6 +50,8 @@ class TitleState extends MusicBeatState
 
 		KadeEngineData.initSave();
 
+	
+
 		#if sys
 		if (!sys.FileSystem.exists(Sys.getCwd() + "/assets/replays"))
 			sys.FileSystem.createDirectory(Sys.getCwd() + "/assets/replays");
