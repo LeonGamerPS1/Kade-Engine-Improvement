@@ -310,8 +310,8 @@ class FreeplayState extends MusicBeatState
 				changeDiff(1);
 		}
 
-		if (FlxG.sound.music.playing)
-			FlxG.sound.music.pitch = rate;
+		#if FLX_PITCH if (FlxG.sound.music.playing)
+			FlxG.sound.music.pitch = rate; #end
 
 		if (controls.BACK)
 		{

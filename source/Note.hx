@@ -210,7 +210,7 @@ class Note extends FlxSprite
 			flipY = true;
 
 		var stepHeight = (((0.45 * Conductor.stepCrochet)) * FlxMath.roundDecimal(PlayStateChangeables.scrollSpeed == 1 ? PlayState.SONG.speed : PlayStateChangeables.scrollSpeed,
-			2)) + 0.27;
+			2));
 
 		// we can't divide step height cuz if we do uh it'll fucking lag the shit out of the game
 
@@ -302,7 +302,7 @@ class Note extends FlxSprite
 		if ((mustPress || !ignoreNote) && (wasGoodHit || (prevNote.wasGoodHit && !canBeHit)))
 		{
 			var swagRect:FlxRect = clipRect;
-	
+
 			if (swagRect == null)
 				swagRect = new FlxRect(0, 0, frameWidth, frameHeight);
 
@@ -323,5 +323,15 @@ class Note extends FlxSprite
 			}
 			clipRect = swagRect;
 		}
+	}
+
+	override function set_clipRect(rect:FlxRect) {
+
+		@:bypassAccessor clipRect = rect;
+
+		if(frames != null)
+			frame = frames.frames[animation.frameIndex];
+
+		return clipRect = rect;
 	}
 }

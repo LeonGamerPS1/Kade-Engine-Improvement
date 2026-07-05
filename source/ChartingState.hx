@@ -778,7 +778,7 @@ class ChartingState extends MusicBeatState
 
 		if (FlxG.keys.justPressed.ENTER)
 		{
-			FlxG.mouse.visible = false;
+			
 			PlayState.SONG = _song;
 			FlxG.sound.music.stop();
 			if (vocals != null)

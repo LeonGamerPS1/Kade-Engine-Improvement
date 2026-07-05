@@ -395,7 +395,7 @@ class Stage
 						add(waveSpriteFG);
 					 */
 				}
-			default:
+			case "stage":
 				{
 					camZoom = 0.9;
 					curStage = 'stage';

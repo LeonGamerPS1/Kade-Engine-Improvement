@@ -164,7 +164,7 @@ class TitleState extends MusicBeatState
 
 		FlxTween.tween(credTextShit, {y: credTextShit.y + 20}, 2.9, {ease: FlxEase.quadInOut, type: PINGPONG});
 
-		FlxG.mouse.visible = false;
+		
 
 		if (initialized)
 			skipIntro();
@@ -258,7 +258,7 @@ class TitleState extends MusicBeatState
 			{
 				// Get current version of Kade Engine
 
-				var http = new haxe.Http("https://raw.githubusercontent.com/KadeDev/Kade-Engine/master/version.downloadMe");
+				var http = new haxe.Http("https://raw.githubusercontent.com/LeonGamerPS1/Kade-Engine-Improvement/refs/heads/nightly/version.downloadMe");
 				var returnedData:Array<String> = [];
 
 				http.onData = function(data:String)

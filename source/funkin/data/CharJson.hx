@@ -2,8 +2,8 @@ package funkin.data;
 
 typedef Point2D =
 {
-	var x:Int;
-	var y:Int;
+	var x:Float;
+	var y:Float;
 }
 
 typedef Bool2D =

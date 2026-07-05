@@ -58,11 +58,11 @@ class DiffOverview extends FlxSubState
         camHUD.bgColor.alpha = 0;
         var camGame = new FlxCameraExt();
 
-        FlxG.cameras.add(camGame);
+        FlxG.cameras.reset(camGame);
 
-        FlxG.cameras.add(camHUD);
+        FlxG.cameras.add(camHUD, false);
 
-		FlxCamera.defaultCameras = [camGame];
+
 
         playerStrums = new FlxTypedGroup<FlxSprite>();
 
@@ -458,8 +458,9 @@ class DiffOverview extends FlxSubState
 				{
 					oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
 
-					var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + Conductor.stepCrochet, daNoteData, oldNote, true, true);
+					var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + 5, daNoteData, oldNote, true, true);
 					sustainNote.scrollFactor.set();
+					sustainNote.noteYOff = Math.ceil(swagNote.height / 2);
 					unspawnNotes.push(sustainNote);
 
 					sustainNote.mustPress = gottaHitNote;

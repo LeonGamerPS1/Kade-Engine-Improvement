@@ -84,6 +84,14 @@ class OptionsMenu extends MusicBeatState
 	var currentSelectedCat:OptionCategory;
 	var blackBorder:FlxSprite;
 
+	var song = false;
+
+	public function new(song = false)
+	{
+		super();
+		this.song = song;
+	}
+
 	override function create()
 	{
 		clean();
@@ -145,7 +153,11 @@ class OptionsMenu extends MusicBeatState
 		{
 			if (controls.BACK && !isCat)
 			{
-				FlxG.switchState(new MainMenuState());
+				if (!song)
+					FlxG.switchState(new MainMenuState());
+				else
+					FlxG.switchState(new PlayState());
+				song = false;
 			}
 			else if (controls.BACK)
 			{

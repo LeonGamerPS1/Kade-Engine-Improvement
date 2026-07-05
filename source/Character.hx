@@ -81,20 +81,6 @@ class Character extends FlxAnimate
 				updateHitbox();
 				antialiasing = false;
 
-			case 'dad':
-				icon = 'dad';
-				// DAD ANIMATION LOADING CODE
-				frames = Paths.getSparrowAtlas('characters/DADDY_DEAREST', 'shared');
-
-				animation.addByPrefix('idle', 'Dad idle dance', 24, false);
-				animation.addByPrefix('singUP', 'Dad Sing Note UP', 24, false);
-				animation.addByPrefix('singRIGHT', 'Dad Sing Note RIGHT', 24, false);
-				animation.addByPrefix('singDOWN', 'Dad Sing Note DOWN', 24, false);
-				animation.addByPrefix('singLEFT', 'Dad Sing Note LEFT', 24, false);
-
-				loadOffsetFile(curCharacter);
-
-				playAnim('idle');
 			case 'spooky':
 				icon = 'spooky';
 				frames = Paths.getSparrowAtlas('characters/spooky_kids_assets', 'shared');
