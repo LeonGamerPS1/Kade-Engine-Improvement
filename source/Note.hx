@@ -327,11 +327,11 @@ class Note extends FlxSprite
 
 	override function set_clipRect(rect:FlxRect) {
 
-		@:bypassAccessor clipRect = rect;
+		@:bypassAccessor clipRect = rect.round();
 
 		if(frames != null)
 			frame = frames.frames[animation.frameIndex];
 
-		return clipRect = rect;
+		return clipRect = rect.round();
 	}
 }

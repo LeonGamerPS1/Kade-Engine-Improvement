@@ -72,16 +72,14 @@ class FreeplayState extends MusicBeatState
 		for (i in 0...initSonglist.length)
 		{
 			var data:Array<String> = initSonglist[i].split(':');
-			var meta = new SongMetadata(data[0].toLowerCase().replace(' ','-'), Std.parseInt(data[2]), data[1]);
+			var meta = new SongMetadata(data[0].toLowerCase().replace(' ', '-'), Std.parseInt(data[2]), data[1]);
 			var format = StringTools.replace(meta.songName, " ", "-");
-
 
 			var diffs = [];
 			var diffsThatExist = [];
 
-		
 			diffsThatExist = ["Easy", "Normal", "Hard"];
-			
+
 			if (diffsThatExist.contains("Easy"))
 				FreeplayState.loadDiff(0, format, meta.songName, diffs);
 			if (diffsThatExist.contains("Normal"))
@@ -216,11 +214,13 @@ class FreeplayState extends MusicBeatState
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+		
 
 		if (FlxG.sound.music.volume < 0.7)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 		}
+		Conductor.songPosition = FlxG.sound.music.time;
 
 		lerpScore = Math.floor(FlxMath.lerp(lerpScore, intendedScore, 0.4));
 
@@ -310,8 +310,10 @@ class FreeplayState extends MusicBeatState
 				changeDiff(1);
 		}
 
-		#if FLX_PITCH if (FlxG.sound.music.playing)
-			FlxG.sound.music.pitch = rate; #end
+		#if FLX_PITCH
+		if (FlxG.sound.music.playing)
+			FlxG.sound.music.pitch = rate;
+		#end
 
 		if (controls.BACK)
 		{
@@ -461,6 +463,7 @@ class FreeplayState extends MusicBeatState
 		}
 
 		iconArray[curSelected].alpha = 1;
+	
 
 		for (item in grpSongs.members)
 		{
@@ -476,6 +479,14 @@ class FreeplayState extends MusicBeatState
 				// item.setGraphicSize(Std.int(item.width));
 			}
 		}
+	}
+
+	override function beatHit()
+	{
+		super.beatHit();
+		var curSelected = grpSongs.members[curSelected];
+		var icon = iconArray[FreeplayState.curSelected];
+		icon.bump(1);
 	}
 }
 

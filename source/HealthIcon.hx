@@ -63,7 +63,7 @@ class HealthIcon extends FlxSprite
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
-
+		bumpLerp();
 		if (sprTracker != null)
 			setPosition(sprTracker.x + sprTracker.width + 10, sprTracker.y - 30);
 	}
@@ -75,6 +75,7 @@ class HealthIcon extends FlxSprite
 		super.destroy();
 	}
 
+	var lerpFactor = 8;
 	public function bump(mult:Float = 1)
 	{
 		scale.copyFrom(baseScale).scale(mult * bopScale.x, mult * bopScale.y);

@@ -214,7 +214,6 @@ class PlayState extends MusicBeatState
 
 	override public function create()
 	{
-		
 		instance = this;
 
 		previousRate = songMultiplier - 0.05;
@@ -1188,7 +1187,7 @@ class PlayState extends MusicBeatState
 
 		// Song duration in a float, useful for the time left feature
 		songLength = FlxG.sound.music.length / 1000;
-		#if FLX_PITCH 
+		#if FLX_PITCH
 		FlxG.sound.music.pitch = songMultiplier;
 		if (vocals != null)
 			vocals.pitch = songMultiplier;
@@ -1376,12 +1375,12 @@ class PlayState extends MusicBeatState
 
 					babyArrow.x += Note.swagWidth * i;
 					babyArrow.animation.add('static', [i]);
-					babyArrow.animation.add('pressed', [4 + i, 8 + i], 12, false);
-					babyArrow.animation.add('confirm', [12 + i, 16 + i], 12, false);
+					babyArrow.animation.add('pressed', [4 + i, 8 + i], 24, false);
+					babyArrow.animation.add('confirm', [12 + i, 16 + i], 24, false);
 
 					for (j in 0...4)
 					{
-						babyArrow.animation.add('dirCon' + j, [12 + j, 16 + j], 12, false);
+						babyArrow.animation.add('dirCon' + j, [12 + j, 16 + j], 24, false);
 					}
 
 				default:
@@ -1662,8 +1661,6 @@ class PlayState extends MusicBeatState
 			FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, handleInput);
 			FlxG.stage.removeEventListener(KeyboardEvent.KEY_UP, releaseInput);
 		}
-
-		
 		#end
 
 		if (startedCountdown && !songStarted)
@@ -1707,8 +1704,6 @@ class PlayState extends MusicBeatState
 
 		if (!inCutscene && songStarted)
 			keyShit();
-		for (icon in healthIcons)
-			icon.bumpLerp(Conductor.bpm < 340 ? 1 : 0.9);
 
 		var iconOffset:Int = 26;
 
@@ -1997,23 +1992,8 @@ class PlayState extends MusicBeatState
 				daNote.y = strum.y + dist;
 
 				final fakeCrochet:Float = (60 / SONG.bpm) * 1000;
-				if (daNote.flipY && daNote.isSustainNote)
-				{
-					if (daNote.animation.curAnim.name.endsWith('end'))
-					{
-						daNote.y += 10.5 * (fakeCrochet / 400) * 1.5 * songSpeed + (46 * (songSpeed - 1));
-						daNote.y -= 46 * (1 - (fakeCrochet / 600)) * songSpeed;
 
-						daNote.y -= 19;
-					}
-					daNote.y += (Note.swagWidth / 2) - (60.5 * (songSpeed - 1));
-					daNote.y += 27.5 * ((SONG.bpm / 100) - 1) * (songSpeed - 1);
-				}
-
-				if (daNote.isSustainNote)
-					daNote.clipToStrumNote(strum);
-
-				if (!daNote.mustPress && daNote.wasGoodHit && !daNote.alreadyHit)
+				if (!daNote.mustPress && daNote.wasGoodHit)
 				{
 					if (SONG.song != 'Tutorial')
 						camZooming = true;
@@ -2032,148 +2012,37 @@ class PlayState extends MusicBeatState
 						vocals.volume = 1;
 
 					if (FlxG.save.data.cpuStrums)
-						pressArrow(strum, strum.ID, daNote);
-
-					daNote.active = false;
-					daNote.alreadyHit = true;
-
-					if (!daNote.isSustainNote)
 					{
-						daNote.kill();
-						notes.remove(daNote, true);
-						daNote.destroy();
+						strum.playAnim('confirm', true);
+						strum.r = Conductor.crochet * .5 * .0001;
 					}
-				}
 
-				if (daNote.isSustainNote)
-				{
-					daNote.x += daNote.width / 2 + 20;
-					if (SONG.noteStyle == 'pixel')
-						daNote.x -= 11;
+					daNote.visible = false;
+					daNote.alreadyHit = true;
 				}
 
 				// trace(daNote.y);
 				// WIP interpolation shit? Need to fix the pause issue
 				// daNote.y = (strumLine.y - (songTime - daNote.strumTime) * (0.45 * PlayState.SONG.speed));
 
-				if (daNote.isSustainNote && daNote.wasGoodHit && Conductor.songPosition - (350 / SONG.speed) >= daNote.strumTime)
+				if (daNote.mustPress
+					&& daNote.strumTime <= Conductor.songPosition - 166 / songRate
+					&& !daNote.wasGoodHit
+					&& !daNote.ignoreNote)
+				{
+					noteMiss(daNote.noteData, daNote);
+					daNote.ignoreNote = true;
+					daNote.alpha = .5;
+				}
+
+				if (daNote.strumTime + daNote.sustainLength <= Conductor.songPosition
+					&& daNote.wasGoodHit
+					|| daNote.strumTime <= Conductor.songPosition - (166 * 2 / songRate)
+					&& !daNote.wasGoodHit)
 				{
 					daNote.kill();
 					notes.remove(daNote, true);
 					daNote.destroy();
-				}
-				else if ((daNote.mustPress && !PlayStateChangeables.useDownscroll || daNote.mustPress && PlayStateChangeables.useDownscroll)
-					&& daNote.mustPress
-					&& daNote.strumTime / songMultiplier - Conductor.songPosition / songMultiplier < -(166 * Conductor.timeScale)
-					&& songStarted)
-				{
-					if (daNote.isSustainNote && daNote.wasGoodHit)
-					{
-						daNote.kill();
-						notes.remove(daNote, true);
-					}
-					else
-					{
-						if (loadRep && daNote.isSustainNote)
-						{
-							// im tired and lazy this sucks I know i'm dumb
-							if (findByTime(daNote.strumTime) != null)
-								totalNotesHit += 1;
-							else
-							{
-								vocals.volume = 0;
-								if (theFunne && !daNote.isSustainNote)
-								{
-									noteMiss(daNote.noteData, daNote);
-								}
-								if (daNote.isParent)
-								{
-									health -= 0.15; // give a health punishment for failing a LN
-									trace("hold fell over at the start");
-									for (i in daNote.children)
-									{
-										i.alpha = 0.3;
-										i.sustainActive = false;
-									}
-								}
-								else
-								{
-									if (!daNote.wasGoodHit
-										&& daNote.isSustainNote
-										&& daNote.sustainActive
-										&& daNote.spotInLine != daNote.parent.children.length)
-									{
-										// health -= 0.05; // give a health punishment for failing a LN
-										trace("hold fell over at " + daNote.spotInLine);
-										for (i in daNote.parent.children)
-										{
-											i.alpha = 0.3;
-											i.sustainActive = false;
-										}
-										if (daNote.parent.wasGoodHit)
-											misses++;
-										updateAccuracy();
-									}
-									else if (!daNote.wasGoodHit && !daNote.isSustainNote)
-									{
-										health -= 0.15;
-									}
-								}
-							}
-						}
-						else
-						{
-							vocals.volume = 0;
-							if (theFunne && !daNote.isSustainNote)
-							{
-								if (PlayStateChangeables.botPlay)
-								{
-									daNote.rating = "bad";
-									goodNoteHit(daNote);
-								}
-								else
-									noteMiss(daNote.noteData, daNote);
-							}
-
-							if (daNote.isParent && daNote.visible)
-							{
-								health -= 0.15; // give a health punishment for failing a LN
-								trace("hold fell over at the start");
-								for (i in daNote.children)
-								{
-									i.alpha = 0.3;
-									i.sustainActive = false;
-								}
-							}
-							else
-							{
-								if (!daNote.wasGoodHit
-									&& daNote.isSustainNote
-									&& daNote.sustainActive
-									&& daNote.spotInLine != daNote.parent.children.length)
-								{
-									// health -= 0.05; // give a health punishment for failing a LN
-									trace("hold fell over at " + daNote.spotInLine);
-									for (i in daNote.parent.children)
-									{
-										i.alpha = 0.3;
-										i.sustainActive = false;
-									}
-									if (daNote.parent.wasGoodHit)
-										misses++;
-									updateAccuracy();
-								}
-								else if (!daNote.wasGoodHit && !daNote.isSustainNote)
-								{
-									health -= 0.15;
-								}
-							}
-						}
-					}
-
-					daNote.visible = false;
-					daNote.kill();
-					notes.remove(daNote, true);
 				}
 			});
 		}
@@ -3174,9 +3043,12 @@ class PlayState extends MusicBeatState
 			note.wasGoodHit = true;
 			if (!note.isSustainNote)
 				updateAccuracy();
-			note.kill();
-			notes.remove(note, true);
-			note.destroy();
+			if (!note.isSustainNote)
+			{
+				note.kill();
+				notes.remove(note, true);
+				note.destroy();
+			}
 		}
 	}
 

@@ -336,10 +336,10 @@ class ChartingState extends MusicBeatState
 		});
 		player2DropDown.selectedLabel = _song.player2;
 
-		var player3DropDown = new FlxUIDropDownMenu(75, player1DropDown.y + 35, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true),
+		var player3DropDown = new FlxUIDropDownMenu(75, player1DropDown.y + 35, FlxUIDropDownMenu.makeStrIdLabelArray(characters),
 			function(character:String)
 			{
-				_song.gfVersion = characters[Std.parseInt(character)];
+				_song.gfVersion = character;
 				updateHeads();
 			});
 		player3DropDown.selectedLabel = _song.gfVersion;

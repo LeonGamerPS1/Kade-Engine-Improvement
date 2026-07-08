@@ -144,6 +144,7 @@ class CharacterEdit extends FlxUIState
 
 		var animationDropDown:FlxUIDropDownMenu = new FlxUIDropDownMenu(25, 25, FlxUIDropDownMenu.makeStrIdLabelArray(animationNames, true), (anim) ->
 		{
+			currentAnim = animationNames[Std.parseInt(anim)];
 			character.playAnim(animationNames[Std.parseInt(anim)]);
 		});
 		animDropDowns.push(animationDropDown);
@@ -152,14 +153,14 @@ class CharacterEdit extends FlxUIState
 			character?.json?.global_offset.x ?? 0, -90000, 90000, 0);
 
 		var stepperPosOffsetY:FlxUINumericStepper = new FlxUINumericStepper(animationDropDown.x + animationDropDown.width + 10, 25 + stepperPosOffsetX.height,
-			1, character?.json?.global_offset.y ?? 0, -90000, 90000, 0);
+			10, character?.json?.global_offset.y ?? 0, -90000, 90000, 0);
 		uiChar.add(stepperPosOffsetX);
 		uiChar.add(stepperPosOffsetY);
 
 		var stepperPosOffsetXCam:FlxUINumericStepper = new FlxUINumericStepper(stepperPosOffsetX.x + stepperPosOffsetX.width + 50, 25, 10,
 			character?.json?.camera_offset.x ?? 0, -90000, 90000, 0);
 
-		var stepperPosOffsetYCam = new FlxUINumericStepper(stepperPosOffsetX.x + stepperPosOffsetX.width + 50, 25 + stepperPosOffsetX.height, 1,
+		var stepperPosOffsetYCam = new FlxUINumericStepper(stepperPosOffsetX.x + stepperPosOffsetX.width + 50, 25 + stepperPosOffsetX.height, 10,
 			character?.json?.camera_offset.y ?? 0, -90000, 90000, 0);
 		uiChar.add(stepperPosOffsetXCam);
 		uiChar.add(stepperPosOffsetYCam);
@@ -186,10 +187,41 @@ class CharacterEdit extends FlxUIState
 		flipX.checked = character.json?.flip.x ?? false;
 		uiChar.add(flipX);
 
+		var AddAnimation:FlxUIButton = new FlxUIButton(stepperPosOffsetY.x, stepperPosOffsetY.y + 5, 'Update Animation', updateAnim);
+		uiChar.add(AddAnimation);
+
+		var RemoveAnimation:FlxUIButton = new FlxUIButton(AddAnimation.x + AddAnimation.width, stepperPosOffsetY.y + 5, 'Remove Animation', removeAnim);
+		uiChar.add(RemoveAnimation);
+
 		uiChar.add(animationDropDown);
 		uiChar.add(new FlxText(animationDropDown.x, animationDropDown.y - 60, 0, 'Current Animation:'));
 		uiChar.add(new FlxText(stepperPosOffsetX.x, stepperPosOffsetX.y - 60, 0, 'Global Offset X/Y:'));
 		uiChar.add(new FlxText(stepperPosOffsetXCam.x, stepperPosOffsetXCam.y - 60, 0, 'Camera Offset X/Y:'));
+	}
+
+	var currentAnim = "";
+
+	public function updateAnim()
+	{
+	}
+
+	public function removeAnim()
+	{
+		animationNames.remove(currentAnim);
+		character.anim.remove(currentAnim);
+		if (character.json != null)
+		{
+			for (poop in character.json.animation_data.map)
+			{
+				if (poop.animationName == currentAnim)
+					character.json.animation_data.map.remove(poop);
+			}
+		}
+		character.playAnim(animationNames[0]);
+		final DataList = FlxUIDropDownMenu.makeStrIdLabelArray(animationNames, true);
+
+		for (animDropDown in animDropDowns)
+			animDropDown.setData(DataList);
 	}
 
 	function updatePlayerPosIG()
@@ -204,10 +236,12 @@ class CharacterEdit extends FlxUIState
 	override function update(elapsed:Float)
 	{
 		final mainPos = !character.isPlayer ? dadPos : bfPos;
-		final offsetX = character.json?.camera_offset?.x ?? 0.0;
-		final offsetY = character.json?.camera_offset?.y ?? 0.0;
+		final offsetX = character.json?.global_offset?.x ?? 0.0;
+		final offsetY = character.json?.global_offset?.y ?? 0.0;
+				final offsetX2 = character.json?.camera_offset?.x ?? 0.0;
+		final offsetY2 = character.json?.camera_offset?.y ?? 0.0;
 		if (!character.isPlayer)
-			cross.setPosition(character.getMidpoint().x + 150 + offsetX, character.getMidpoint().y - 100 + offsetY);
+			cross.setPosition(character.getMidpoint().x + 150 + offsetX2, character.getMidpoint().y - 100 + offsetY2);
 
 		super.update(elapsed);
 		final adde = elapsed * 600;
