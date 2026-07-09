@@ -1,5 +1,6 @@
 package;
 
+import funkin.graphics.StripHoldRenderer.SustainTrail;
 import flixel.math.FlxRect;
 import flixel.addons.effects.FlxSkewedSprite;
 import flixel.FlxG;
@@ -296,42 +297,5 @@ class Note extends FlxSprite
 
 	public var ignoreNote = false;
 
-	public function clipToStrumNote(myStrum:StaticArrow)
-	{
-		var center:Float = myStrum.y + noteYOff + Note.swagWidth / 2;
-		if ((mustPress || !ignoreNote) && (wasGoodHit || (prevNote.wasGoodHit && !canBeHit)))
-		{
-			var swagRect:FlxRect = clipRect;
-
-			if (swagRect == null)
-				swagRect = new FlxRect(0, 0, frameWidth, frameHeight);
-
-			if (flipY)
-			{
-				if (y + height >= center)
-				{
-					swagRect.width = frameWidth;
-					swagRect.height = (center - y) / scale.y;
-					swagRect.y = frameHeight - swagRect.height;
-				}
-			}
-			else if (y <= center)
-			{
-				swagRect.y = (center - y) / scale.y;
-				swagRect.width = width / scale.x;
-				swagRect.height = (height / scale.y) - swagRect.y;
-			}
-			clipRect = swagRect;
-		}
-	}
-
-	override function set_clipRect(rect:FlxRect) {
-
-		@:bypassAccessor clipRect = rect.round();
-
-		if(frames != null)
-			frame = frames.frames[animation.frameIndex];
-
-		return clipRect = rect.round();
-	}
+	public var sustain:SustainTrail;
 }
